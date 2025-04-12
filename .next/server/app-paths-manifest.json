@@ -1,0 +1,8 @@
+{
+  "/table-layout/page": "app/table-layout/page.js",
+  "/order/[tableId]/page": "app/order/[tableId]/page.js",
+  "/backoffice/page": "app/backoffice/page.js",
+  "/backoffice/general/business/page": "app/backoffice/general/business/page.js",
+  "/backoffice/tables/definitions/page": "app/backoffice/tables/definitions/page.js",
+  "/backoffice/tables/groups/page": "app/backoffice/tables/groups/page.js"
+}

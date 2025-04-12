@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, Percent } from 'lucide-react';
+import { Coffee, Clock } from 'lucide-react';
 
 interface OccupancyStatsProps {
   occupiedTables: number;
@@ -18,59 +18,70 @@ const OccupancyStats: React.FC<OccupancyStatsProps> = ({
     return total > 0 ? Math.round((occupied / total) * 100) : 0;
   };
 
+  const tableOccupancyRate = calculateOccupancyRate(occupiedTables, totalTables);
+
+  // Determine status colors based on occupancy rates
+  const getStatusColor = (rate: number) => {
+    if (rate < 30) return 'text-green-400';
+    if (rate < 70) return 'text-yellow-400';
+    return 'text-red-400';
+  };
+
+  const getStatusBg = (rate: number) => {
+    if (rate < 30) return 'bg-green-400';
+    if (rate < 70) return 'bg-yellow-400';
+    return 'bg-red-400';
+  };
+
+  // Calculate average seating time (example data)
+  const averageSeatingTime = 45; // minutes
+  const formatTime = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return hours > 0 ? `${hours}s ${mins}d` : `${mins}d`;
+  };
+
   return (
-    <div className="space-y-3">
-      <h3 className="text-white font-semibold mb-3 px-2">İstatistikler</h3>
-      
-      <div className="space-y-3">
-        {/* Table Occupancy */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-gray-300">
-            <Users size={18} />
-            <span className="text-sm">Masa Doluluk</span>
-          </div>
+    <div className="grid grid-cols-2 gap-3">
+      {/* Table Occupancy Card */}
+      <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-xl p-3 border border-blue-500/20">
+        <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <div className="h-2 w-24 bg-gray-700 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-blue-500 rounded-full"
-                style={{ width: `${calculateOccupancyRate(occupiedTables, totalTables)}%` }}
-              ></div>
+            <div className="p-1.5 bg-blue-500/20 rounded-lg">
+              <Coffee size={16} className="text-blue-400" />
             </div>
-            <span className="text-white font-medium text-sm">
-              {calculateOccupancyRate(occupiedTables, totalTables)}%
-            </span>
+            <span className="text-sm text-gray-300">Masalar</span>
           </div>
-        </div>
-
-        {/* Seat Occupancy */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-gray-300">
-            <Users size={18} />
-            <span className="text-sm">Koltuk Doluluk</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-24 bg-gray-700 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-blue-500 rounded-full"
-                style={{ width: `${calculateOccupancyRate(occupiedSeats, totalSeats)}%` }}
-              ></div>
-            </div>
-            <span className="text-white font-medium text-sm">
-              {calculateOccupancyRate(occupiedSeats, totalSeats)}%
-            </span>
-          </div>
-        </div>
-
-        {/* Current Customers */}
-        <div className="text-gray-300 text-sm flex justify-between">
-          <span>Mevcut Müşteri:</span>
-          <span className="text-white">{occupiedSeats} / {totalSeats} kişi</span>
+          <span className={`text-base font-bold ${getStatusColor(tableOccupancyRate)}`}>
+            {tableOccupancyRate}%
+          </span>
         </div>
         
-        {/* Occupied Tables */}
-        <div className="text-gray-300 text-sm flex justify-between">
-          <span>Dolu Masa:</span>
-          <span className="text-white">{occupiedTables} / {totalTables} masa</span>
+        <div className="h-1.5 bg-gray-700/50 rounded-full overflow-hidden mb-2">
+          <div 
+            className={`h-full ${getStatusBg(tableOccupancyRate)} transition-all duration-500`}
+            style={{ width: `${tableOccupancyRate}%` }}
+          />
+        </div>
+
+        <div className="flex justify-between items-center text-xs">
+          <span className="text-gray-400">Dolu: {occupiedTables}</span>
+          <span className="text-gray-400">Boş: {totalTables - occupiedTables}</span>
+        </div>
+      </div>
+
+      {/* Average Seating Time */}
+      <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-xl p-3 border border-green-500/20">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-green-500/20 rounded-lg">
+              <Clock size={16} className="text-green-400" />
+            </div>
+            <span className="text-sm text-gray-300">Ort. Oturma</span>
+          </div>
+          <span className="text-base font-bold text-white">
+            {formatTime(averageSeatingTime)}
+          </span>
         </div>
       </div>
     </div>
