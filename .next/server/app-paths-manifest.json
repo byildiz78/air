@@ -1,6 +1,0 @@
-{
-  "/not-found": "app/not-found.js",
-  "/page": "app/page.js",
-  "/table-layout/page": "app/table-layout/page.js",
-  "/order/[tableId]/page": "app/order/[tableId]/page.js"
-}
