@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .keyboard-key {
+    @apply h-full bg-[#e6f3ff] hover:bg-[#d9edff] rounded font-medium flex items-center justify-center transition-colors text-gray-700;
+  }
+}

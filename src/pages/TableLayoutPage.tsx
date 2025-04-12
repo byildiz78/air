@@ -1,0 +1,292 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Calendar, Receipt, Home, Palmtree, Warehouse, Users } from 'lucide-react';
+import TableComponent from '../components/TableComponent';
+import OccupancyStats from '../components/OccupancyStats';
+import { Section, TableData, TableStatus, TableShape, TableSize } from '../types';
+
+// Size configurations for collision detection
+const tableSizes = {
+  small: { width: 96, height: 96 },
+  medium: { width: 128, height: 128 },
+  large: { width: 160, height: 160 },
+};
+
+const shapes: TableShape[] = ['round', 'rectangle', 'square', 'oval'];
+const sizes: TableSize[] = ['small', 'medium', 'large'];
+
+// Check if two tables overlap using more precise collision detection
+const doTablesOverlap = (table1: TableData, table2: TableData) => {
+  const size1 = tableSizes[table1.size];
+  const size2 = tableSizes[table2.size];
+  
+  // Larger padding for better spacing
+  const padding = 80;
+  
+  // Calculate dimensions considering shape
+  const width1 = table1.shape === 'rectangle' || table1.shape === 'oval' ? size1.width * 1.5 : size1.width;
+  const width2 = table2.shape === 'rectangle' || table2.shape === 'oval' ? size2.width * 1.5 : size2.width;
+  
+  // Convert percentages to actual pixels
+  const x1 = (table1.position.x / 100) * window.innerWidth;
+  const y1 = (table1.position.y / 100) * window.innerHeight;
+  const x2 = (table2.position.x / 100) * window.innerWidth;
+  const y2 = (table2.position.y / 100) * window.innerHeight;
+
+  // Calculate centers
+  const center1 = {
+    x: x1 + width1 / 2,
+    y: y1 + size1.height / 2
+  };
+  const center2 = {
+    x: x2 + width2 / 2,
+    y: y2 + size2.height / 2
+  };
+
+  // Calculate distance between centers
+  const distance = Math.sqrt(
+    Math.pow(center2.x - center1.x, 2) + 
+    Math.pow(center2.y - center1.y, 2)
+  );
+
+  // Minimum distance to prevent overlap
+  const minDistance = Math.max(
+    Math.max(width1, size1.height),
+    Math.max(width2, size2.height)
+  ) / 2 + padding;
+
+  return distance < minDistance;
+};
+
+// Generate a valid position for a new table
+const generateValidPosition = (existingTables: TableData[], newTable: Partial<TableData>): { x: number; y: number; rotation: number } => {
+  let attempts = 0;
+  const maxAttempts = 100;
+  
+  // Define zones for better distribution
+  const zones = [
+    { x: 10, y: 10, width: 35, height: 35 },
+    { x: 55, y: 10, width: 35, height: 35 },
+    { x: 10, y: 55, width: 35, height: 35 },
+    { x: 55, y: 55, width: 35, height: 35 },
+  ];
+  
+  while (attempts < maxAttempts) {
+    // Select a random zone
+    const zone = zones[Math.floor(Math.random() * zones.length)];
+    
+    const position = {
+      x: zone.x + Math.random() * zone.width,
+      y: zone.y + Math.random() * zone.height,
+      // Limit rotation to reasonable angles
+      rotation: Math.floor(Math.random() * 8) * 45 // 45-degree increments
+    };
+
+    const tableWithPosition = {
+      ...newTable,
+      position,
+    } as TableData;
+
+    const hasOverlap = existingTables.some(existingTable => 
+      doTablesOverlap(existingTable, tableWithPosition)
+    );
+
+    if (!hasOverlap) {
+      return position;
+    }
+
+    attempts++;
+  }
+
+  // Fallback to grid layout with slight randomization
+  const gridSize = Math.ceil(Math.sqrt(existingTables.length + 1));
+  const index = existingTables.length;
+  const row = Math.floor(index / gridSize);
+  const col = index % gridSize;
+  
+  return {
+    x: (col / gridSize) * 70 + 15 + (Math.random() * 5),
+    y: (row / gridSize) * 70 + 15 + (Math.random() * 5),
+    rotation: Math.floor(Math.random() * 8) * 45
+  };
+};
+
+const sectionConfigs = [
+  {
+    id: 'garden',
+    name: 'Bahçe',
+    icon: Palmtree,
+    tableCount: 16,
+    prefix: 'B'
+  },
+  {
+    id: 'salon',
+    name: 'Salon',
+    icon: Home,
+    tableCount: 20,
+    prefix: 'S'
+  },
+  {
+    id: 'basement',
+    name: 'Alt Kat',
+    icon: Warehouse,
+    tableCount: 12,
+    prefix: 'A'
+  }
+] as const;
+
+const generateTableData = (count: number, prefix: string): TableData[] => {
+  const tables: TableData[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const shape = shapes[Math.floor(Math.random() * shapes.length)];
+    const size = sizes[Math.floor(Math.random() * sizes.length)];
+    
+    // Adjust seats based on table size and shape
+    let baseSeats = shape === 'round' ? 4 : 6;
+    if (size === 'small') baseSeats -= 2;
+    if (size === 'large') baseSeats += 2;
+    if (shape === 'rectangle' || shape === 'oval') baseSeats += 2;
+
+    const newTable: Partial<TableData> = {
+      id: i + 1,
+      number: `${prefix}${i + 1}`,
+      shape,
+      size,
+      seats: baseSeats,
+      status: (Math.random() > 0.6 ? 'occupied' : 'empty') as TableStatus,
+    };
+
+    const position = generateValidPosition(tables, newTable);
+    
+    tables.push({
+      ...newTable,
+      position,
+      occupiedInfo: Math.random() > 0.6 ? {
+        waiter: ['Ahmet', 'Mehmet', 'Ayşe', 'Fatma', 'Ali', 'Zeynep', 'Can', 'Elif'][Math.floor(Math.random() * 8)],
+        occupiedTime: Math.floor(Math.random() * 180),
+        currentGuests: Math.floor(Math.random() * (baseSeats - 1)) + 1,
+      } : undefined,
+    } as TableData);
+  }
+
+  return tables;
+};
+
+const TableLayoutPage: React.FC = () => {
+  const router = useRouter();
+  const [sections, setSections] = useState<Section[]>([]);
+  const [activeSection, setActiveSection] = useState('garden');
+
+  useEffect(() => {
+    const generatedSections = sectionConfigs.map(config => ({
+      ...config,
+      tables: generateTableData(config.tableCount, config.prefix)
+    }));
+    setSections(generatedSections);
+  }, []);
+
+  const currentSection = sections.find(s => s.id === activeSection) || sections[0] || { 
+    id: '', 
+    name: '', 
+    icon: Palmtree, 
+    tables: [] 
+  };
+
+  const handleTableClick = (tableNumber: string) => {
+    router.push(`/order/${tableNumber}`);
+  };
+
+  return (
+    <div className="flex h-[calc(100vh-7rem)]">
+      {/* Tables Area */}
+      <div className="flex-1 relative bg-gray-900/30 rounded-lg m-6">
+        {currentSection.tables?.map(table => (
+          <TableComponent
+            key={table.id}
+            table={table}
+            onClick={handleTableClick}
+          />
+        ))}
+      </div>
+
+      {/* Right Sidebar */}
+      <div className="w-96 bg-gray-900/90 border-l border-gray-800 flex flex-col">
+        <div className="flex flex-col h-full p-6">
+          {/* Section Navigation */}
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-white mb-4">Bölümler</h2>
+            <div className="space-y-2">
+              {sections.map(section => (
+                <button
+                  key={section.id}
+                  onClick={() => setActiveSection(section.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
+                    activeSection === section.id
+                      ? 'bg-blue-600 text-white'
+                      : 'text-gray-400 hover:bg-gray-800/50 hover:text-white'
+                  }`}
+                >
+                  <section.icon size={20} />
+                  <span>{section.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="flex-1 space-y-6 overflow-auto">
+            {/* Current Section Stats */}
+            <div className="bg-gray-800/50 p-4 rounded-xl">
+              <h3 className="text-lg font-medium text-white mb-3">{currentSection.name}</h3>
+              <OccupancyStats
+                occupiedTables={currentSection.tables?.filter(t => t.status === 'occupied').length || 0}
+                totalTables={currentSection.tables?.length || 0}
+                occupiedSeats={currentSection.tables?.reduce((sum, table) => 
+                  sum + (table.occupiedInfo?.currentGuests || 0), 0) || 0}
+                totalSeats={currentSection.tables?.reduce((sum, table) => sum + table.seats, 0) || 0}
+              />
+            </div>
+
+            {/* Overall Stats */}
+            <div className="bg-gray-800/50 p-4 rounded-xl">
+              <h3 className="text-lg font-medium text-white mb-3">Genel Durum</h3>
+              <OccupancyStats
+                occupiedTables={sections.flatMap(s => s.tables).filter(t => t.status === 'occupied').length}
+                totalTables={sections.reduce((sum, s) => sum + s.tables.length, 0)}
+                occupiedSeats={sections.reduce((sum, section) => 
+                  sum + section.tables.reduce((tableSum, table) => 
+                    tableSum + (table.occupiedInfo?.currentGuests || 0), 0), 0)}
+                totalSeats={sections.reduce((sum, section) => 
+                  sum + section.tables.reduce((tableSum, table) => tableSum + table.seats, 0), 0)}
+              />
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="space-y-2 mt-6">
+            <button
+              onClick={() => router.push('/takeaway')}
+              className="w-full flex items-center justify-center gap-2 p-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors"
+            >
+              <Receipt size={20} />
+              <span>Paket Sipariş</span>
+            </button>
+            <button className="w-full flex items-center justify-center gap-2 p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
+              <Calendar size={20} />
+              <span>Rezervasyonlar</span>
+            </button>
+            <button className="w-full flex items-center justify-center gap-2 p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
+              <Users size={20} />
+              <span>Personel</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TableLayoutPage;

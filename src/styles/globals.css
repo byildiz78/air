@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.btn {
+  @apply transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-opacity-50;
+}
+
+.btn-blue {
+  @apply btn bg-blue-600 bg-opacity-80 hover:bg-opacity-90 focus:ring-blue-500;
+}
+
+.btn-green {
+  @apply btn bg-green-600 bg-opacity-80 hover:bg-opacity-90 focus:ring-green-500;
+}
+
+.btn-red {
+  @apply btn bg-red-600 bg-opacity-80 hover:bg-opacity-90 focus:ring-red-500;
+}
+
+.glass {
+  @apply bg-white bg-opacity-15 backdrop-filter backdrop-blur-sm;
+}
+
+.glass-darker {
+  @apply bg-white bg-opacity-25 backdrop-filter backdrop-blur-sm;
+}
+
+.shadow-glow {
+  box-shadow: 0 0 8px currentColor;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+.hover\:scale-102:hover {
+  transform: scale(1.02);
+}
