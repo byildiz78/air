@@ -1,35 +1,15 @@
 {
   "pages": {
-    "/template": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/template.js"
-    ],
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/table-layout/page": [
+    "/template": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/table-layout/page.js"
-    ],
-    "/order/[tableId]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/order/[tableId]/page.js"
-    ],
-    "/backoffice/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/backoffice/page.js"
+      "static/chunks/app/template.js"
     ],
     "/backoffice/layout": [
       "static/chunks/webpack.js",
@@ -41,15 +21,90 @@
       "static/chunks/main-app.js",
       "static/chunks/app/backoffice/general/business/page.js"
     ],
-    "/backoffice/tables/definitions/page": [
+    "/backoffice/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/backoffice/tables/definitions/page.js"
+      "static/chunks/app/backoffice/page.js"
+    ],
+    "/backoffice/general/central/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/general/central/page.js"
+    ],
+    "/backoffice/general/terminal/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/general/terminal/page.js"
+    ],
+    "/backoffice/general/security/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/general/security/page.js"
     ],
     "/backoffice/tables/groups/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/backoffice/tables/groups/page.js"
+    ],
+    "/backoffice/tables/definitions/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/tables/definitions/page.js"
+    ],
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
+    ],
+    "/backoffice/menu/products/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/menu/products/page.js"
+    ],
+    "/backoffice/menu/groups/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/menu/groups/page.js"
+    ],
+    "/backoffice/menu/products/message-groups/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/menu/products/message-groups/page.js"
+    ],
+    "/backoffice/menu/products/messages/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/menu/products/messages/page.js"
+    ],
+    "/backoffice/menu/combos/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/menu/combos/page.js"
+    ],
+    "/backoffice/tax-definitions/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/tax-definitions/page.js"
+    ],
+    "/backoffice/staff/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/staff/page.js"
+    ],
+    "/backoffice/paymentmethods/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/paymentmethods/page.js"
+    ],
+    "/backoffice/promotions/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/promotions/page.js"
+    ],
+    "/backoffice/maintenance/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/backoffice/maintenance/page.js"
     ]
   }
 }

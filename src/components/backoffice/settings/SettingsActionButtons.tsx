@@ -1,5 +1,6 @@
 import React from 'react';
 import { Save, X } from 'lucide-react';
+import BackofficeFooter from '../BackofficeFooter';
 
 interface SettingsActionButtonsProps {
   onCancel: () => void;
@@ -11,8 +12,8 @@ const SettingsActionButtons: React.FC<SettingsActionButtonsProps> = ({
   onSave,
 }) => {
   return (
-    <div className="flex-none bg-white border-t border-gray-200 p-2">
-      <div className="container mx-auto flex justify-end space-x-2">
+    <BackofficeFooter>
+      <div className="flex justify-end space-x-2">
         <button
           type="button"
           onClick={onCancel}
@@ -30,7 +31,7 @@ const SettingsActionButtons: React.FC<SettingsActionButtonsProps> = ({
           KAYDET VE KAPAT
         </button>
       </div>
-    </div>
+    </BackofficeFooter>
   );
 };
 

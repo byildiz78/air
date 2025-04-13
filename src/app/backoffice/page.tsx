@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Building2, Users, ShoppingBag, DollarSign } from 'lucide-react';
+import { Building2, Users, ShoppingBag, DollarSign,Backpack } from 'lucide-react';
 import StatsCard from '../../components/backoffice/StatsCard';
 import ModuleCard from '../../components/backoffice/ModuleCard';
 
@@ -42,7 +42,7 @@ export default function BackofficePage() {
       title: 'Genel Ayarlar',
       description: 'İşletme bilgileri, terminal ve güvenlik ayarları',
       icon: Building2,
-      href: '/backoffice/general'
+      href: '/backoffice/general/business'
     },
     {
       title: 'Personel Ayarları',
@@ -54,13 +54,26 @@ export default function BackofficePage() {
       title: 'Masa Ayarları',
       description: 'Masa grupları ve masa tanımlamaları',
       icon: ShoppingBag,
-      href: '/backoffice/tables'
+      href: '/backoffice/tables/definitions'
     },
     {
       title: 'Menü Ayarları',
       description: 'Ürünler, kategoriler ve fiyatlandırma',
       icon: DollarSign,
-      href: '/backoffice/menu'
+      href: '/backoffice/menu/products'
+    },
+    {
+      title: 'Bakım İşlemleri',
+      description: 'Bakım işlemlerini yönetin',
+      icon: DollarSign,
+      href: '/backoffice/maintenance'
+    },
+    {
+      title: '<--- Satış Ekranına Dön',
+      description: 'Satış ekranına dönmek için tıklayın',
+      icon: Backpack,
+      color: 'text-red-500',
+      href: '/'
     }
   ];
 

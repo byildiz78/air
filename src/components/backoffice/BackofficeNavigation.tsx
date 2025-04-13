@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   Settings, Users, Layout, Menu, Tag, Package,
   Search, Database, Smartphone, FileText, ChevronDown,
-  Building2, Shield, Monitor, CreditCard, ShoppingBag, Tablet, Printer, Globe
+  Building2, Shield, Monitor, CreditCard, ShoppingBag, Tablet, Printer, Globe, MessageSquare, LayoutGrid, Percent
 } from 'lucide-react';
 
 interface NavItem {
@@ -16,7 +16,11 @@ interface NavItem {
   items?: NavItem[];
 }
 
-const navigation: NavItem[] = [
+const navigation: NavItem[] = [  {
+  title: 'Arama',
+  icon: Search,
+  href: '/backoffice/search'
+},
   {
     title: 'Genel Ayarlar',
     icon: Settings,
@@ -43,39 +47,27 @@ const navigation: NavItem[] = [
     ]
   },
   {
-    title: 'Menü Ayarları',
+    title: 'Menü',
     icon: Menu,
     href: '/backoffice/menu',
     items: [
-      { title: 'Menü Grupları', icon: Package, href: '/backoffice/menu/groups' },
+      { title: 'Menü Ekran Grupları', icon: Package, href: '/backoffice/menu/groups' },
       { title: 'Ürünler', icon: Tag, href: '/backoffice/menu/products' },
-      { title: 'Kombo Menüler', icon: Package, href: '/backoffice/menu/combos' }
+      { title: 'Ürün Mesaj Grupları', icon: Package, href: '/backoffice/menu/products/message-groups' },
+      { title: 'Ürün Mesajları', icon: MessageSquare, href: '/backoffice/menu/products/messages' },
+      { title: 'Kombo Menüler', icon: Package, href: '/backoffice/menu/combos' },
+      { title: 'KDV Tanımları', icon: Percent, href: '/backoffice/tax-definitions' }
     ]
+  },
+  {
+    title: 'Ödeme Tipleri',
+    icon: CreditCard,
+    href: '/backoffice/paymentmethods'
   },
   {
     title: 'İndirim & Promosyon',
     icon: Tag,
     href: '/backoffice/promotions'
-  },
-  {
-    title: 'Arama',
-    icon: Search,
-    href: '/backoffice/search'
-  },
-  {
-    title: 'Veritabanı',
-    icon: Database,
-    href: '/backoffice/database'
-  },
-  {
-    title: 'Android Yazarkasa',
-    icon: Smartphone,
-    href: '/backoffice/android'
-  },
-  {
-    title: 'Özel İptal Sebepleri',
-    icon: FileText,
-    href: '/backoffice/cancellation'
   }
 ];
 
@@ -139,7 +131,7 @@ const BackofficeNavigation = () => {
   };
 
   return (
-    <nav className="w-64 bg-white border-r border-gray-200 overflow-y-auto">
+    <nav className="w-64 h-screen bg-white border-r border-gray-200 overflow-y-auto">
       <div className="p-4">
         <div className="flex items-center mb-8">
           <span className="text-2xl font-bold text-gray-800">

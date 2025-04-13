@@ -1,207 +1,149 @@
 import React from 'react';
-import { BusinessSettings } from '@/types/settings';
+import { StoreSetting } from '@/types/settings';
+import { Settings2, AlertCircle, Key, Info, Check, X } from 'lucide-react';
 
 interface BusinessInfoFormProps {
-  settings: BusinessSettings;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+  settings: StoreSetting[];
+  onChange: (setting: StoreSetting, newValue: string | boolean) => void;
 }
 
-const BusinessInfoForm: React.FC<BusinessInfoFormProps> = ({ settings, onChange }) => {
+// Büyük harfli metni düzeltme fonksiyonu
+const formatText = (text: string) => {
+  if (!text) return '';
+  if (text === text.toUpperCase()) {
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  }
+  return text;
+};
+
+// Boolean değeri kontrol etme fonksiyonu
+const isTrueValue = (value: string | null) => {
+  if (!value) return false;
+  return ['1', 'true', 'yes', 'evet'].includes(value.toLowerCase());
+};
+
+export default function BusinessInfoForm({ settings, onChange }: BusinessInfoFormProps) {
+  const handleChange = (setting: StoreSetting, value: string | boolean) => {
+    if (setting.ParamType === 'bool' || setting.ParamType === 'pbool') {
+      onChange(setting, value ? '1' : '0');
+    } else {
+      onChange(setting, value);
+    }
+  };
+
   return (
-    <div className="divide-y divide-gray-200">
-      {/* Section Header */}
-      <div className="px-3 py-2.5 bg-gray-50">
-        <h3 className="text-lg font-medium text-gray-900">İşletme Bilgileri</h3>
-        <p className="mt-1 text-sm text-gray-500">
-          İşletmenizin temel bilgilerini ve iletişim detaylarını buradan yönetebilirsiniz.
-        </p>
-      </div>
-
-      {/* Form Content */}
-      <div className="p-3">
-        <div className="grid grid-cols-1 gap-y-3">
-          {/* Basic Info Section */}
-          <div className="space-y-4">
-            <h4 className="text-base font-medium text-gray-900 border-b border-gray-200 pb-2">
-              Temel Bilgiler
-            </h4>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  İşletme Adı
-                </label>
-                <input
-                  type="text"
-                  name="businessName"
-                  value={settings.businessName}
-                  onChange={onChange}
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Semt
-                </label>
-                <input
-                  type="text"
-                  name="district"
-                  value={settings.district}
-                  onChange={onChange}
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-                />
-              </div>
+    <div className="max-w-6xl mx-auto">
+      {/* Başlık */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg shadow-blue-100">
+              <Settings2 className="w-7 h-7 text-white" />
             </div>
-
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                İşletme Adresi
-              </label>
-              <textarea
-                name="businessAddress"
-                value={settings.businessAddress}
-                onChange={onChange}
-                rows={3}
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-              />
-            </div>
-          </div>
-
-          {/* Contact Info Section */}
-          <div className="space-y-4">
-            <h4 className="text-base font-medium text-gray-900 border-b border-gray-200 pb-2">
-              İletişim Bilgileri
-            </h4>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  İşletme Telefonu
-                </label>
-                <input
-                  type="text"
-                  name="businessPhone"
-                  value={settings.businessPhone}
-                  onChange={onChange}
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Caller ID Telefon Kodu
-                </label>
-                <input
-                  type="text"
-                  name="callerIdCode"
-                  value={settings.callerIdCode}
-                  onChange={onChange}
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Location Info Section */}
-          <div className="space-y-4">
-            <h4 className="text-base font-medium text-gray-900 border-b border-gray-200 pb-2">
-              Konum Bilgileri
-            </h4>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Harita İli
-                </label>
-                <input
-                  type="text"
-                  name="mapCity"
-                  value={settings.mapCity}
-                  onChange={onChange}
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Harita İlçesi
-                </label>
-                <input
-                  type="text"
-                  name="mapDistrict"
-                  value={settings.mapDistrict}
-                  onChange={onChange}
-                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center bg-blue-50 p-4 rounded-lg">
-              <input
-                type="checkbox"
-                name="useRegisteredAddressProviders"
-                checked={settings.useRegisteredAddressProviders}
-                onChange={onChange}
-                className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-              />
-              <label className="ml-2 text-sm text-blue-700">
-                Kayıtlı Adres Verilerini Kullan
-              </label>
-            </div>
-          </div>
-
-          {/* Integration Settings */}
-          <div className="space-y-4">
-            <h4 className="text-base font-medium text-gray-900 border-b border-gray-200 pb-2">
-              Entegrasyon Ayarları
-            </h4>
-            
-            <div className="grid grid-cols-1 gap-4 bg-gray-50 p-4 rounded-lg">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="profiloEnabled"
-                  checked={settings.profiloEnabled}
-                  onChange={onChange}
-                  className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                />
-                <label className="ml-2 text-sm text-gray-700">
-                  Profilo Yazarkasa Kullanılıyor
-                </label>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="fiscalboxEnabled"
-                  checked={settings.fiscalboxEnabled}
-                  onChange={onChange}
-                  className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                />
-                <label className="ml-2 text-sm text-gray-700">
-                  Fiscalbox Yazarkasa Kullanılıyor
-                </label>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="pavoAndroidEnabled"
-                  checked={settings.pavoAndroidEnabled}
-                  onChange={onChange}
-                  className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                />
-                <label className="ml-2 text-sm text-gray-700">
-                  Pavo Android Yazarkasa Kullanılıyor
-                </label>
-              </div>
+          
+              <p className="text-sm text-gray-500 mt-1 flex items-center">
+                <span className="font-medium text-gray-900">{settings.length}</span>
+                <span className="ml-1">ayar yapılandırması bulundu</span>
+              </p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Form Kartları */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {settings.map((setting) => (
+          <div
+            key={setting.SettingsID}
+            className="group bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all duration-300"
+          >
+            {/* Kart Başlığı */}
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-start justify-between mb-3">
+                <label 
+                  htmlFor={`setting-${setting.SettingsID}`}
+                  className="text-base font-semibold text-gray-900 group-hover:text-blue-700 transition-colors duration-200"
+                >
+                  {formatText(setting.ParamName)}
+                </label>
+                <div className="flex items-center space-x-2">
+                  {setting.DefaultValue !== setting.ParamValue && (
+                    <div className="px-2.5 py-1 text-xs font-medium bg-amber-50 text-amber-700 rounded-full border border-amber-200/50 shadow-sm flex items-center">
+                      <AlertCircle className="w-3 h-3 mr-1" />
+                      Değiştirildi
+                    </div>
+                  )}
+                  <div className="px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full border border-gray-200/50">
+                    {setting.ParamType}
+                  </div>
+                </div>
+              </div>
+
+              {/* Meta Bilgiler */}
+              <div className="flex items-center space-x-4 text-xs text-gray-500">
+                <div className="flex items-center px-2 py-1 rounded-md bg-gray-50">
+                  <Key className="w-3 h-3 mr-1.5 text-gray-400" />
+                  <span className="font-medium">{setting.ParamKey}</span>
+                </div>
+                {setting.DefaultValue && setting.DefaultValue !== setting.ParamValue && (
+                  <div className="flex items-center px-2 py-1 rounded-md bg-gray-50">
+                    <Info className="w-3 h-3 mr-1.5 text-gray-400" />
+                    <span>Varsayılan: <span className="font-medium">{setting.DefaultValue}</span></span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Form Alanı */}
+            <div className="p-6">
+              {(setting.ParamType === 'bool' || setting.ParamType === 'pbool') ? (
+                <div className="flex items-center justify-between">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={isTrueValue(setting.ParamValue)}
+                      onChange={(e) => handleChange(setting, e.target.checked)}
+                    />
+                    <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:shadow-sm after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-blue-500 peer-checked:to-blue-600"></div>
+                  </label>
+                  <div className={`
+                    flex items-center px-3 py-1 rounded-full text-xs font-medium
+                    ${isTrueValue(setting.ParamValue) 
+                      ? 'bg-blue-50 text-blue-700' 
+                      : 'bg-gray-100 text-gray-600'
+                    }
+                  `}>
+                    {isTrueValue(setting.ParamValue) ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 mr-1" />
+                        Aktif
+                      </>
+                    ) : (
+                      <>
+                        <X className="w-3.5 h-3.5 mr-1" />
+                        Pasif
+                      </>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="relative">
+                  <input
+                    type="text"
+                    id={`setting-${setting.SettingsID}`}
+                    value={setting.ParamValue || ''}
+                    onChange={(e) => handleChange(setting, e.target.value)}
+                    className="block w-full px-4 py-3 text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent hover:border-gray-300 transition-all duration-200 placeholder-gray-400"
+                    placeholder={setting.DefaultValue || 'Değer girin...'}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
-};
-
-export default BusinessInfoForm;
+}
