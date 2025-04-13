@@ -1,4 +1,4 @@
-import { DivideIcon as LucideIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 export type TableStatus = 'empty' | 'occupied';
 export type TableShape = 'round' | 'rectangle' | 'square' | 'oval';

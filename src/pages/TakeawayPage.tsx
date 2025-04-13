@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { categories } from '../data/categories';
-import { Product, OrderItem, ComboItem } from '../types';
+import { Product, OrderItem, ComboItem, Payment } from '../types';
 import Header from '../components/Header';
 import ProductGrid from '../components/ProductGrid';
 import Cart from '../components/Cart';
@@ -15,6 +15,7 @@ const TakeawayPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [isOtherOptionsOpen, setIsOtherOptionsOpen] = useState(false);
   const [isCheckDiscountOpen, setIsCheckDiscountOpen] = useState(false);
@@ -81,9 +82,13 @@ const TakeawayPage: React.FC = () => {
     });
   };
 
-  const handlePayment = (type: string) => {
-    console.log(`Processing ${type} payment`);
-    router.push('/');
+  const handlePayment = (type: 'cash' | 'card' | 'multinet' | 'sodexo', amount: number) => {
+    const newPayment: Payment = {
+      type,
+      amount,
+      timestamp: new Date().toISOString()
+    };
+    setPayments(prev => [...prev, newPayment]);
   };
 
   const handleCheckDiscount = (amount: number) => {
@@ -159,6 +164,7 @@ const TakeawayPage: React.FC = () => {
         {/* Cart */}
         <Cart
           orderItems={orderItems}
+          payments={payments}
           onIncrement={productId => {
             const product = selectedCategory.products.find(p => p.id === productId);
             if (product) addToOrder(product);

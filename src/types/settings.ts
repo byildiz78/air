@@ -129,6 +129,17 @@ export interface ServiceSettings {
   };
 }
 
+export interface TerminalSettings {
+  terminalNo: string;
+  terminalName: string;
+  backgroundImage: string;
+  sidebarImage: string;
+  defaultFloorPlan: string;
+  terminalInterface: string;
+  language: string;
+  showQRMenuNotifications: boolean;
+}
+
 export interface CashierSettings {
   enablePaymentFeatures: boolean;
   rememberCashierAndAskPassword: boolean;

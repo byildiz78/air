@@ -249,11 +249,20 @@ const TableLayoutPage: React.FC = () => {
           <div className="bg-gray-800/50 p-2 rounded-lg">
             <h3 className="text-sm font-medium text-white mb-2">{currentSection.name}</h3>
             <OccupancyStats
-              occupiedTables={currentSection.tables?.filter(t => t.status === 'occupied').length || 0}
-              totalTables={currentSection.tables?.length || 0}
-              occupiedSeats={currentSection.tables?.reduce((sum, table) => 
-                sum + (table.occupiedInfo?.currentGuests || 0), 0) || 0}
-              totalSeats={currentSection.tables?.reduce((sum, table) => sum + table.seats, 0) || 0}
+              sectionStats={{
+                occupiedTables: currentSection.tables?.filter(t => t.status === 'occupied').length || 0,
+                totalTables: currentSection.tables?.length || 0,
+                occupiedSeats: currentSection.tables?.reduce((sum, table) => 
+                  sum + (table.occupiedInfo?.currentGuests || 0), 0) || 0,
+                totalSeats: currentSection.tables?.reduce((sum, table) => sum + table.seats, 0) || 0
+              }}
+              restaurantStats={{
+                occupiedTables: sections.flatMap(s => s.tables).filter(t => t.status === 'occupied').length,
+                totalTables: sections.flatMap(s => s.tables).length,
+                occupiedSeats: sections.flatMap(s => s.tables).reduce((sum, table) => 
+                  sum + (table.occupiedInfo?.currentGuests || 0), 0),
+                totalSeats: sections.flatMap(s => s.tables).reduce((sum, table) => sum + table.seats, 0)
+              }}
             />
           </div>
 
@@ -261,13 +270,20 @@ const TableLayoutPage: React.FC = () => {
           <div className="bg-gray-800/50 p-2 rounded-lg">
             <h3 className="text-sm font-medium text-white mb-2">Genel Durum</h3>
             <OccupancyStats
-              occupiedTables={sections.flatMap(s => s.tables).filter(t => t.status === 'occupied').length}
-              totalTables={sections.reduce((sum, s) => sum + s.tables.length, 0)}
-              occupiedSeats={sections.reduce((sum, section) => 
-                sum + section.tables.reduce((tableSum, table) => 
-                  tableSum + (table.occupiedInfo?.currentGuests || 0), 0), 0)}
-              totalSeats={sections.reduce((sum, section) => 
-                sum + section.tables.reduce((tableSum, table) => tableSum + table.seats, 0), 0)}
+              sectionStats={{
+                occupiedTables: sections.flatMap(s => s.tables).filter(t => t.status === 'occupied').length,
+                totalTables: sections.flatMap(s => s.tables).length,
+                occupiedSeats: sections.flatMap(s => s.tables).reduce((sum, table) => 
+                  sum + (table.occupiedInfo?.currentGuests || 0), 0),
+                totalSeats: sections.flatMap(s => s.tables).reduce((sum, table) => sum + table.seats, 0)
+              }}
+              restaurantStats={{
+                occupiedTables: sections.flatMap(s => s.tables).filter(t => t.status === 'occupied').length,
+                totalTables: sections.flatMap(s => s.tables).length,
+                occupiedSeats: sections.flatMap(s => s.tables).reduce((sum, table) => 
+                  sum + (table.occupiedInfo?.currentGuests || 0), 0),
+                totalSeats: sections.flatMap(s => s.tables).reduce((sum, table) => sum + table.seats, 0)
+              }}
             />
           </div>
         </div>

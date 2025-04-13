@@ -35,16 +35,14 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   };
 
   const handleGroupChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    if (e.target instanceof HTMLSelectElement) {
-      const groupId = e.target.value;
-      const selectedGroup = menuGroups.find(g => g.id === groupId);
-      
-      setEditedProduct(prev => ({
-        ...prev,
-        groupId,
-        groupColor: selectedGroup?.color || '#3B82F6'
-      }));
-    }
+    const { name, value } = e.target;
+    const selectedGroup = menuGroups.find(g => g.id === value);
+    
+    setEditedProduct(prev => ({
+      ...prev,
+      groupId: value,
+      groupColor: selectedGroup?.color || '#3B82F6'
+    }));
   };
 
   return (

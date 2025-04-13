@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import { Calendar, Receipt, Home, Palmtree, Warehouse } from 'lucide-react';
 import TableComponent from '../TableComponent';
 import OccupancyStats from '../OccupancyStats';
+import { TableShape, TableSize, TableStatus, Section, TableData } from '@/types';
 
-const sections = [
+const sections: Section[] = [
   {
     id: 'garden',
     name: 'Bahçe',
@@ -15,9 +16,16 @@ const sections = [
       id: i + 1,
       number: `B${i + 1}`,
       seats: Math.random() > 0.5 ? 4 : 6,
-      status: Math.random() > 0.6 ? 'occupied' : 'empty',
+      status: Math.random() > 0.6 ? 'occupied' : 'empty' as TableStatus,
+      shape: Math.random() > 0.5 ? 'round' : 'square' as TableShape,
+      size: (['small', 'medium', 'large'] as TableSize[])[Math.floor(Math.random() * 3)],
+      position: {
+        x: 50 + Math.cos(i * (2 * Math.PI / 15)) * 30,
+        y: 50 + Math.sin(i * (2 * Math.PI / 15)) * 30,
+        rotation: i * (360 / 15)
+      },
       occupiedInfo: Math.random() > 0.6 ? {
-        waiter: ['Ahmet', 'Mehmet', 'Ayşe', 'Fatma...'][Math.floor(Math.random() * 4)],
+        waiter: ['Ahmet', 'Mehmet', 'Ayşe', 'Fatma'][Math.floor(Math.random() * 4)],
         occupiedTime: Math.floor(Math.random() * 180),
         currentGuests: Math.floor(Math.random() * 4) + 1,
       } : undefined,
@@ -31,7 +39,14 @@ const sections = [
       id: i + 1,
       number: `S${i + 1}`,
       seats: Math.random() > 0.5 ? 4 : 6,
-      status: Math.random() > 0.6 ? 'occupied' : 'empty',
+      status: Math.random() > 0.6 ? 'occupied' : 'empty' as TableStatus,
+      shape: Math.random() > 0.5 ? 'rectangle' : 'square' as TableShape,
+      size: (['small', 'medium', 'large'] as TableSize[])[Math.floor(Math.random() * 3)],
+      position: {
+        x: 25 + (i % 5) * 20,
+        y: 25 + Math.floor(i / 5) * 20,
+        rotation: 0
+      },
       occupiedInfo: Math.random() > 0.6 ? {
         waiter: ['Ahmet', 'Mehmet', 'Ayşe', 'Fatma'][Math.floor(Math.random() * 4)],
         occupiedTime: Math.floor(Math.random() * 180),
@@ -47,7 +62,14 @@ const sections = [
       id: i + 1,
       number: `A${i + 1}`,
       seats: Math.random() > 0.5 ? 4 : 6,
-      status: Math.random() > 0.6 ? 'occupied' : 'empty',
+      status: Math.random() > 0.6 ? 'occupied' : 'empty' as TableStatus,
+      shape: 'oval' as TableShape,
+      size: (['small', 'medium', 'large'] as TableSize[])[Math.floor(Math.random() * 3)],
+      position: {
+        x: 30 + (i % 4) * 25,
+        y: 30 + Math.floor(i / 4) * 25,
+        rotation: 0
+      },
       occupiedInfo: Math.random() > 0.6 ? {
         waiter: ['Ahmet', 'Mehmet', 'Ayşe', 'Fatma'][Math.floor(Math.random() * 4)],
         occupiedTime: Math.floor(Math.random() * 180),
@@ -66,6 +88,21 @@ const TableLayoutPage: React.FC = () => {
     router.push(`/order/${tableNumber}`);
   };
 
+  // Calculate section and restaurant stats
+  const calculateStats = (tables: TableData[]) => {
+    return {
+      totalTables: tables.length,
+      occupiedTables: tables.filter(t => t.status === 'occupied').length,
+      totalSeats: tables.reduce((sum, t) => sum + t.seats, 0),
+      occupiedSeats: tables.filter(t => t.status === 'occupied')
+        .reduce((sum, t) => sum + (t.occupiedInfo?.currentGuests || 0), 0),
+    };
+  };
+
+  const sectionStats = calculateStats(currentSection.tables);
+  const allTables = sections.flatMap(s => s.tables);
+  const restaurantStats = calculateStats(allTables);
+
   return (
     <div className="min-h-screen bg-gray-900/70">
       <div className="flex h-screen">
@@ -77,15 +114,38 @@ const TableLayoutPage: React.FC = () => {
           </div>
 
           {/* Tables Grid */}
-          <div className="grid grid-cols-4 gap-6 p-4">
-            {currentSection.tables.map(table => (
-              <div key={table.id} className="flex justify-center">
-                <TableComponent
-                  table={table}
-                  onClick={handleTableClick}
-                />
+          <div className="relative w-full h-[600px] bg-gray-800/50 rounded-xl p-8">
+            {currentSection.id === 'garden' ? (
+              <div className="relative w-full h-full">
+                {currentSection.tables.map(table => (
+                  <div
+                    key={table.id}
+                    style={{
+                      position: 'absolute',
+                      left: `${table.position.x}%`,
+                      top: `${table.position.y}%`,
+                      transform: `translate(-50%, -50%) rotate(${table.position.rotation}deg)`,
+                    }}
+                  >
+                    <TableComponent
+                      table={table}
+                      onClick={handleTableClick}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className="grid grid-cols-5 gap-4">
+                {currentSection.tables.map(table => (
+                  <div key={table.id} className="flex justify-center">
+                    <TableComponent
+                      table={table}
+                      onClick={handleTableClick}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -100,49 +160,24 @@ const TableLayoutPage: React.FC = () => {
                   <button
                     key={section.id}
                     onClick={() => setActiveSection(section.id)}
-                    className={`w-full flex items-center gap-3 px-6 py-4 rounded-xl text-lg font-medium transition-all
-                      ${activeSection === section.id 
-                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' 
-                        : 'bg-gray-800/50 text-gray-300 hover:bg-gray-800/70'}`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
+                      activeSection === section.id
+                        ? 'bg-blue-600/90 text-white'
+                        : 'text-gray-400 hover:bg-gray-800/50 hover:text-white'
+                    }`}
                   >
-                    <section.icon size={24} />
+                    <section.icon className="h-5 w-5" />
                     <span>{section.name}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Statistics */}
+            {/* Stats */}
             <OccupancyStats
-              sectionStats={{
-                totalTables: currentSection.tables.length,
-                occupiedTables: currentSection.tables.filter(t => t.status === 'occupied').length,
-                totalSeats: currentSection.tables.reduce((sum, table) => sum + table.seats, 0),
-                occupiedSeats: currentSection.tables.reduce((sum, table) => 
-                  sum + (table.occupiedInfo?.currentGuests || 0), 0)
-              }}
-              restaurantStats={{
-                totalTables: sections.reduce((sum, section) => sum + section.tables.length, 0),
-                occupiedTables: sections.flatMap(s => s.tables).filter(t => t.status === 'occupied').length,
-                totalSeats: sections.reduce((sum, section) => 
-                  sum + section.tables.reduce((tableSum, table) => tableSum + table.seats, 0), 0),
-                occupiedSeats: sections.reduce((sum, section) => 
-                  sum + section.tables.reduce((tableSum, table) => 
-                    tableSum + (table.occupiedInfo?.currentGuests || 0), 0), 0)
-              }}
+              sectionStats={sectionStats}
+              restaurantStats={restaurantStats}
             />
-
-            {/* Action Buttons */}
-            <div className="space-y-3">
-              <button className="w-full flex items-center gap-3 px-6 py-4 rounded-xl bg-green-600 text-white hover:bg-green-700 transition-colors">
-                <Calendar size={20} />
-                <span className="font-medium">Rezervasyonlar</span>
-              </button>
-              <button className="w-full flex items-center gap-3 px-6 py-4 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition-colors">
-                <Receipt size={20} />
-                <span className="font-medium">Hesap Al</span>
-              </button>
-            </div>
           </div>
         </div>
       </div>

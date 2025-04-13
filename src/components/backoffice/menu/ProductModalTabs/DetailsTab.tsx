@@ -7,7 +7,7 @@ import { ProductPreview } from '../ui/ProductPreview';
 interface DetailsTabProps {
   product: Product;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
-  onGroupChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onGroupChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
   menuGroups: { id: string; name: string; color: string }[];
 }
 

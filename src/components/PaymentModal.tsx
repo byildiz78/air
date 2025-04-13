@@ -78,7 +78,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     if (num === 'backspace') {
       setNumericInput(prev => {
         const newValue = prev.slice(0, -1) || '';
-        const amount = parseFloat((parseInt(newValue) || 0) / 100);
+        const amount = parseFloat(newValue || '0') / 100;
         setInputAmount(amount.toFixed(2));
         setSelectedAmount(amount);
         return newValue;
@@ -93,7 +93,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     } else {
       setNumericInput(prev => {
         const newValue = prev + num;
-        const amount = parseFloat((parseInt(newValue) || 0) / 100);
+        const amount = parseFloat(newValue || '0') / 100;
         setInputAmount(amount.toFixed(2));
         setSelectedAmount(amount);
         return newValue;

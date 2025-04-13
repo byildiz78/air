@@ -7,6 +7,20 @@ interface HappyHourFormProps {
 }
 
 const HappyHourForm: React.FC<HappyHourFormProps> = ({ settings, onChange }) => {
+  // Helper function to safely convert settings value to boolean
+  const getBooleanValue = (value: string | number | boolean | null): boolean => {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'string') return value.toLowerCase() === 'true';
+    if (typeof value === 'number') return value !== 0;
+    return false;
+  };
+
+  // Helper function to safely convert settings value to string
+  const getStringValue = (value: string | number | boolean | null): string => {
+    if (value === null) return '';
+    return String(value);
+  };
+
   return (
     <div className="divide-y divide-gray-200">
       {/* Section Header */}
@@ -26,7 +40,7 @@ const HappyHourForm: React.FC<HappyHourFormProps> = ({ settings, onChange }) => 
               type="checkbox"
               id="happyHourActive"
               name="happyHourActive"
-              checked={settings.happyHourActive}
+              checked={getBooleanValue(settings.happyHourActive)}
               onChange={onChange}
               className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
             />
@@ -41,7 +55,7 @@ const HappyHourForm: React.FC<HappyHourFormProps> = ({ settings, onChange }) => 
               type="checkbox"
               id="automaticHappyHourMode"
               name="automaticHappyHourMode"
-              checked={settings.automaticHappyHourMode}
+              checked={getBooleanValue(settings.automaticHappyHourMode)}
               onChange={onChange}
               className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
             />
@@ -50,50 +64,66 @@ const HappyHourForm: React.FC<HappyHourFormProps> = ({ settings, onChange }) => 
             </label>
           </div>
 
-          {/* Time Settings */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="happyHourStartTime" className="block text-sm font-medium text-gray-700 mb-1">
-                Happy Hour Başlama Saati
-              </label>
-              <input
-                type="time"
-                id="happyHourStartTime"
-                name="happyHourStartTime"
-                value={settings.happyHourStartTime}
-                onChange={onChange}
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-              />
-            </div>
+          {/* Happy Hour Start Time */}
+          <div>
+            <label htmlFor="happyHourStartTime" className="block text-sm font-medium text-gray-700">
+              Başlangıç Saati
+            </label>
+            <input
+              type="time"
+              id="happyHourStartTime"
+              name="happyHourStartTime"
+              value={getStringValue(settings.happyHourStartTime)}
+              onChange={onChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            />
+          </div>
 
-            <div>
-              <label htmlFor="happyHourEndTime" className="block text-sm font-medium text-gray-700 mb-1">
-                Happy Hour Bitiş Saati
-              </label>
-              <input
-                type="time"
-                id="happyHourEndTime"
-                name="happyHourEndTime"
-                value={settings.happyHourEndTime}
-                onChange={onChange}
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-              />
-            </div>
+          {/* Happy Hour End Time */}
+          <div>
+            <label htmlFor="happyHourEndTime" className="block text-sm font-medium text-gray-700">
+              Bitiş Saati
+            </label>
+            <input
+              type="time"
+              id="happyHourEndTime"
+              name="happyHourEndTime"
+              value={getStringValue(settings.happyHourEndTime)}
+              onChange={onChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            />
+          </div>
+
+          {/* Happy Hour Discount Rate */}
+          <div>
+            <label htmlFor="happyHourDiscountRate" className="block text-sm font-medium text-gray-700">
+              İndirim Oranı (%)
+            </label>
+            <input
+              type="number"
+              id="happyHourDiscountRate"
+              name="happyHourDiscountRate"
+              value={getStringValue(settings.happyHourDiscountRate)}
+              onChange={onChange}
+              min="0"
+              max="100"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            />
           </div>
 
           {/* Excluded Sale Types */}
           <div>
-            <label htmlFor="happyHourExcludedSaleTypes" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="happyHourExcludedSaleTypes" className="block text-sm font-medium text-gray-700">
               Happy Hour Kullanılmayacak Satış Tipleri(1;2;5;)
             </label>
             <input
               type="text"
               id="happyHourExcludedSaleTypes"
               name="happyHourExcludedSaleTypes"
-              value={settings.happyHourExcludedSaleTypes}
+              value={getStringValue(settings.happyHourExcludedSaleTypes)}
               onChange={onChange}
               placeholder="Örnek: 1;2;5"
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
             />
           </div>
         </div>

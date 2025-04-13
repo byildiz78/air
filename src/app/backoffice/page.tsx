@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { Building2, Users, ShoppingBag, DollarSign,Backpack } from 'lucide-react';
-import StatsCard from '../../components/backoffice/StatsCard';
+import StatsCard, { StatsCardProps } from '../../components/backoffice/StatsCard';
 import ModuleCard from '../../components/backoffice/ModuleCard';
 
 export default function BackofficePage() {
-  const stats = [
+  const stats: StatsCardProps[] = [
     {
       title: 'Veritabanı Boyutu',
       value: '1.2 GB',

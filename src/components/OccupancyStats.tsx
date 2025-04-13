@@ -1,24 +1,28 @@
 import React from 'react';
 import { Coffee, Clock } from 'lucide-react';
 
-interface OccupancyStatsProps {
-  occupiedTables: number;
+interface Stats {
   totalTables: number;
-  occupiedSeats: number;
+  occupiedTables: number;
   totalSeats: number;
+  occupiedSeats: number;
+}
+
+interface OccupancyStatsProps {
+  sectionStats: Stats;
+  restaurantStats: Stats;
 }
 
 const OccupancyStats: React.FC<OccupancyStatsProps> = ({ 
-  occupiedTables, 
-  totalTables, 
-  occupiedSeats, 
-  totalSeats 
+  sectionStats,
+  restaurantStats
 }) => {
   const calculateOccupancyRate = (occupied: number, total: number) => {
     return total > 0 ? Math.round((occupied / total) * 100) : 0;
   };
 
-  const tableOccupancyRate = calculateOccupancyRate(occupiedTables, totalTables);
+  const tableOccupancyRate = calculateOccupancyRate(sectionStats.occupiedTables, sectionStats.totalTables);
+  const restaurantOccupancyRate = calculateOccupancyRate(restaurantStats.occupiedTables, restaurantStats.totalTables);
 
   // Determine status colors based on occupancy rates
   const getStatusColor = (rate: number) => {
@@ -42,46 +46,50 @@ const OccupancyStats: React.FC<OccupancyStatsProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 gap-1">
-      {/* Table Occupancy Card */}
-      <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded p-1.5 border border-blue-500/20">
-        <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center gap-1">
-            <div className="p-0.5 bg-blue-500/20 rounded">
-              <Coffee size={12} className="text-blue-400" />
+    <div className="space-y-4">
+      {/* Section Stats */}
+      <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-lg p-4 border border-blue-500/20">
+        <h3 className="text-sm font-medium text-gray-300 mb-3">Bölüm Doluluk</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <div className="text-2xl font-semibold text-white">
+              {tableOccupancyRate}%
             </div>
-            <span className="text-[10px] text-gray-300">Masalar</span>
+            <div className="text-sm text-gray-400">
+              {sectionStats.occupiedTables} / {sectionStats.totalTables} Masa
+            </div>
           </div>
-          <span className={`text-[10px] font-bold ${getStatusColor(tableOccupancyRate)}`}>
-            {tableOccupancyRate}%
-          </span>
-        </div>
-        
-        <div className="h-0.5 bg-gray-700/50 rounded-full overflow-hidden mb-1">
-          <div 
-            className={`h-full ${getStatusBg(tableOccupancyRate)} transition-all duration-500`}
-            style={{ width: `${tableOccupancyRate}%` }}
-          />
-        </div>
-
-        <div className="flex justify-between items-center text-[8px]">
-          <span className="text-gray-400">D:{occupiedTables}</span>
-          <span className="text-gray-400">B:{totalTables - occupiedTables}</span>
+          <div>
+            <div className="text-2xl font-semibold text-white">
+              {calculateOccupancyRate(sectionStats.occupiedSeats, sectionStats.totalSeats)}%
+            </div>
+            <div className="text-sm text-gray-400">
+              {sectionStats.occupiedSeats} / {sectionStats.totalSeats} Kişi
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Average Seating Time */}
-      <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 rounded p-1.5 border border-green-500/20">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <div className="p-0.5 bg-green-500/20 rounded">
-              <Clock size={12} className="text-green-400" />
+      {/* Restaurant Stats */}
+      <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/10 rounded-lg p-4 border border-emerald-500/20">
+        <h3 className="text-sm font-medium text-gray-300 mb-3">Restoran Doluluk</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <div className="text-2xl font-semibold text-white">
+              {restaurantOccupancyRate}%
             </div>
-            <span className="text-[10px] text-gray-300">Süre</span>
+            <div className="text-sm text-gray-400">
+              {restaurantStats.occupiedTables} / {restaurantStats.totalTables} Masa
+            </div>
           </div>
-          <span className="text-[10px] font-bold text-white">
-            {formatTime(averageSeatingTime)}
-          </span>
+          <div>
+            <div className="text-2xl font-semibold text-white">
+              {calculateOccupancyRate(restaurantStats.occupiedSeats, restaurantStats.totalSeats)}%
+            </div>
+            <div className="text-sm text-gray-400">
+              {restaurantStats.occupiedSeats} / {restaurantStats.totalSeats} Kişi
+            </div>
+          </div>
         </div>
       </div>
     </div>

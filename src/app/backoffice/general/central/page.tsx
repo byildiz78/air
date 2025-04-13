@@ -14,6 +14,17 @@ interface CentralSettings {
   expenseGroupManagementEnabled: boolean;
 }
 
+type BooleanKeys<T> = {
+  [K in keyof T]: T[K] extends boolean ? K : never
+}[keyof T];
+
+type ManagementItem = {
+  id: string;
+  title: string;
+  enabledKey: BooleanKeys<CentralSettings>;
+  showAddress: boolean;
+};
+
 export default function CentralManagementPage() {
   const [settings, setSettings] = useState<CentralSettings>({
     menuManagementEnabled: true,
@@ -42,7 +53,7 @@ export default function CentralManagementPage() {
     console.log('Settings cancelled');
   };
 
-  const managementItems = [
+  const managementItems: ManagementItem[] = [
     {
       id: 'menu',
       title: 'MERKEZİ MENÜ YÖNETİMİ',

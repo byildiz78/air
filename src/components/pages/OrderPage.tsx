@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { X, Percent, FileText, GitMerge, MoreHorizontal, Users, Coins } from 'lucide-react';
 import { categories } from '@/data/categories';
-import { Product, Category, OrderItem, CartDiscount, ComboItem } from '@/types';
+import { Product, Category, OrderItem, CartDiscount, ComboItem, Payment } from '@/types';
 import Header from '@/components/Header';
 import PageNavigation from '@/components/PageNavigation';
 import CategoryList from '@/components/CategoryList';
@@ -33,6 +33,7 @@ const OrderPage: React.FC<OrderPageProps> = ({ tableId }) => {
   const [isComboModalOpen, setIsComboModalOpen] = useState(false);
   const [selectedComboProduct, setSelectedComboProduct] = useState<Product | null>(null);
   const [cartDiscount, setCartDiscount] = useState<CartDiscount | undefined>();
+  const [payments, setPayments] = useState<Payment[]>([]);
 
   const currentCategories = categories.filter(cat => cat.page === currentPage);
 
@@ -110,6 +111,14 @@ const OrderPage: React.FC<OrderPageProps> = ({ tableId }) => {
     }]);
 
     setSelectedComboProduct(null);
+  };
+
+  const handleBarcodeSubmit = (barcode: string) => {
+    // Find product by barcode and add it to order
+    const product = selectedCategory.products.find(p => p.barcode === barcode);
+    if (product) {
+      addToOrder(product);
+    }
   };
 
   return (
@@ -205,6 +214,7 @@ const OrderPage: React.FC<OrderPageProps> = ({ tableId }) => {
         {/* Cart */}
         <Cart
           orderItems={orderItems}
+          payments={payments}
           discount={cartDiscount}
           tableId={tableId}
           onIncrement={productId => {
@@ -212,7 +222,15 @@ const OrderPage: React.FC<OrderPageProps> = ({ tableId }) => {
             if (product) addToOrder(product);
           }}
           onDecrement={removeFromOrder}
-          onPayment={handlePayment}
+          onPayment={(type, amount) => {
+            setPayments(prev => [...prev, { 
+              type, 
+              amount, 
+              timestamp: new Date().toISOString() 
+            }]);
+            handlePayment(type);
+          }}
+          onBarcodeSubmit={handleBarcodeSubmit}
         />
 
         {/* Modals */}

@@ -20,6 +20,11 @@ interface ProductMessageGroup {
   color: string;
 }
 
+interface ProductMessageGroupFormData extends Partial<ProductMessageGroup> {
+  name: string;
+  color: string;
+}
+
 export default function ProductMessageGroupsPage() {
   const [groups, setGroups] = useState<ProductMessageGroup[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<ProductMessageGroup | null>(null);
@@ -49,10 +54,9 @@ export default function ProductMessageGroupsPage() {
   };
 
   // Handle creating a new group
-  const handleNewGroup = () => {
+  const handleCreateGroup = () => {
     const newGroup: ProductMessageGroup = {
-      id: Date.now().toString(),
-      name: 'YENİ GRUP',
+      name: `Grup ${groups.length + 1}`,
       secondLanguageName: '',
       image: '',
       isActive: true,
@@ -62,12 +66,22 @@ export default function ProductMessageGroupsPage() {
       customCode3: '',
       customCode4: '',
       customCode5: '',
-      securityLevel: 1,
+      securityLevel: 0,
       color: newGroupColor
     };
+    setGroups([...groups, newGroup]);
+  };
+
+  // Handle updating a group
+  const handleUpdateGroup = (updatedGroup: ProductMessageGroup) => {
+    if (!updatedGroup.id) return;
     
-    setSelectedGroup(newGroup);
-    setShowModal(true);
+    setGroups(prevGroups => 
+      prevGroups.map(group => 
+        group.id === updatedGroup.id ? { ...group, ...updatedGroup } : group
+      )
+    );
+    setShowModal(false);
   };
 
   // Handle drag start
@@ -172,52 +186,6 @@ export default function ProductMessageGroupsPage() {
     setSelectedGroup(null);
   };
 
-  // Handle saving the group changes
-  const handleSaveGroup = (updatedGroup: ProductMessageGroup) => {
-    const isNewGroup = !pages.some(page => 
-      page.groups.some(group => group && group.id === updatedGroup.id)
-    );
-    
-    if (isNewGroup) {
-      const newPages = [...pages];
-      let added = false;
-      
-      for (const page of newPages) {
-        if (page.groups.length < 18) {
-          page.groups.push(updatedGroup);
-          added = true;
-          break;
-        }
-      }
-      
-      if (!added && newPages.length > 0) {
-        newPages[0].groups.push(updatedGroup);
-      }
-      
-      setPages(newPages);
-    } else {
-      const pageIndex = pages.findIndex(page => 
-        page.groups.some(group => group && group.id === updatedGroup.id)
-      );
-      
-      if (pageIndex !== -1) {
-        const newPages = [...pages];
-        
-        const groupIndex = newPages[pageIndex].groups.findIndex(
-          group => group && group.id === updatedGroup.id
-        );
-        
-        if (groupIndex !== -1) {
-          newPages[pageIndex].groups[groupIndex] = updatedGroup;
-          setPages(newPages);
-        }
-      }
-    }
-    
-    setShowModal(false);
-    setSelectedGroup(null);
-  };
-
   // Handle deleting a group
   const handleDeleteGroup = (groupId: string) => {
     const pageIndex = pages.findIndex(page => 
@@ -247,7 +215,7 @@ export default function ProductMessageGroupsPage() {
         <h1 className="text-2xl font-bold text-gray-800">Ürün Mesaj Grupları</h1>
         <button 
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-200"
-          onClick={handleNewGroup}
+          onClick={handleCreateGroup}
         >
           <Plus size={18} />
           Yeni Grup Ekle
@@ -286,7 +254,11 @@ export default function ProductMessageGroupsPage() {
                           className="w-full h-full rounded flex items-center justify-center text-white font-bold shadow-sm text-xs"
                           style={{ backgroundColor: group.color }}
                           draggable
-                          onDragStart={(e) => handleDragStart(e, group.id, page.id, index)}
+                          onDragStart={(e) => {
+                            if (group.id) {
+                              handleDragStart(e, group.id, page.id, index);
+                            }
+                          }}
                           onDragEnd={handleDragEnd}
                         >
                           {group.name}
@@ -307,7 +279,7 @@ export default function ProductMessageGroupsPage() {
       <ProductMessageGroupsModal
         isOpen={showModal}
         onClose={handleCloseModal}
-        onSave={handleSaveGroup}
+        onSave={handleUpdateGroup}
         group={selectedGroup || undefined}
       />
     </div>

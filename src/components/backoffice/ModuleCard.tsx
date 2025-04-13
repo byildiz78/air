@@ -1,19 +1,21 @@
 import React from 'react';
 import Link from 'next/link';
-import { DivideIcon as LucideIcon } from 'lucide-react';
+import { DivideIcon } from 'lucide-react';
 
 interface ModuleCardProps {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: typeof DivideIcon;
   href: string;
+  color?: string;
 }
 
 const ModuleCard: React.FC<ModuleCardProps> = ({
   title,
   description,
   icon: Icon,
-  href
+  href,
+  color
 }) => {
   return (
     <Link 
@@ -22,7 +24,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
     >
       <div className="flex items-center">
         <div className="p-3 bg-blue-50 rounded-lg">
-          <Icon className="h-6 w-6 text-blue-500" />
+          <Icon className={`h-6 w-6 ${color || 'text-blue-500'}`} />
         </div>
         <div className="ml-4">
           <h3 className="text-lg font-medium text-gray-900">{title}</h3>

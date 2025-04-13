@@ -121,7 +121,7 @@ const BackofficeNavigation = () => {
           )}
         </Link>
         
-        {hasSubItems && isExpanded && (
+        {hasSubItems && isExpanded && item.items && (
           <div className="mt-1 space-y-1">
             {item.items.map(subItem => renderNavItem(subItem, depth + 1))}
           </div>

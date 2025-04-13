@@ -94,18 +94,19 @@ interface TerminalSettingsState {
   [key: string]: string | boolean | number;
 }
 
-interface CashierSettingsState {
-  enablePaymentFeatures: boolean;
-  rememberCashierAndPassword: boolean;
-  showPaymentDrawerButton: boolean;
-  paymentScreenDisplayDuration: number;
-  showMobilePaymentsInCashierScreen: boolean;
-  useKDVGroups: boolean;
-  enableEtkinlikKasasi: boolean;
-  loadKDVFromTaxGroups: boolean;
-  useHuginIntegration: boolean;
-  [key: string]: boolean | number | string;
-}
+interface CashierSettingsState extends CashierSettings {}
+
+const initialCashierSettings: CashierSettingsState = {
+  enablePaymentFeatures: false,
+  rememberCashierAndAskPassword: false,
+  showCashDrawerButton: false,
+  cashOverlayDisplayDuration: 5,
+  showMobilePaymentsOnCashierScreen: false,
+  useDelicatessenKDVGroups: false,
+  activityCashier: false,
+  loadKDVNamesFromTaxgroups: false,
+  useHuginCashRegister: false
+};
 
 interface ServiceSettingsState {
   general: {
@@ -158,17 +159,7 @@ export default function TerminalSettingsPage() {
     showQRMenuNotifications: false
   });
 
-  const [cashierSettings, setCashierSettings] = useState<CashierSettingsState>({
-    enablePaymentFeatures: true,
-    rememberCashierAndPassword: true,
-    showPaymentDrawerButton: true,
-    paymentScreenDisplayDuration: 30,
-    showMobilePaymentsInCashierScreen: true,
-    useKDVGroups: true,
-    enableEtkinlikKasasi: true,
-    loadKDVFromTaxGroups: true,
-    useHuginIntegration: true
-  });
+  const [cashierSettings, setCashierSettings] = useState<CashierSettingsState>(initialCashierSettings);
 
   const [serviceSettings, setServiceSettings] = useState<ServiceSettingsState>({
     general: {

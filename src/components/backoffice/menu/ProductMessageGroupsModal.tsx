@@ -5,8 +5,14 @@ interface ProductMessageGroup {
   id?: string;
   name: string;
   secondLanguageName: string;
+  image: string;
   isActive: boolean;
   showHeader: boolean;
+  customCode1: string;
+  customCode2: string;
+  customCode3: string;
+  customCode4: string;
+  customCode5: string;
   securityLevel: number;
   color: string;
 }
@@ -32,8 +38,14 @@ export default function ProductMessageGroupsModal({
   const [formData, setFormData] = React.useState<ProductMessageGroup>({
     name: '',
     secondLanguageName: '',
+    image: '',
     isActive: true,
     showHeader: true,
+    customCode1: '',
+    customCode2: '',
+    customCode3: '',
+    customCode4: '',
+    customCode5: '',
     securityLevel: 1,
     color: '#3B82F6'
   });
@@ -86,6 +98,18 @@ export default function ProductMessageGroupsModal({
                 onChange={(e) => setFormData(prev => ({ ...prev, secondLanguageName: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="İkinci dildeki adını girin"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Resim
+              </label>
+              <input
+                type="text"
+                value={formData.image}
+                onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Resim URL'sini girin"
               />
             </div>
           </div>
@@ -146,6 +170,70 @@ export default function ProductMessageGroupsModal({
                 />
                 <span className="ml-2 text-sm text-gray-700">Başlık Göster</span>
               </label>
+            </div>
+          </div>
+
+          {/* Özel Kodlar */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Özel Kod 1
+              </label>
+              <input
+                type="text"
+                value={formData.customCode1}
+                onChange={(e) => setFormData(prev => ({ ...prev, customCode1: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Özel kodu girin"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Özel Kod 2
+              </label>
+              <input
+                type="text"
+                value={formData.customCode2}
+                onChange={(e) => setFormData(prev => ({ ...prev, customCode2: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Özel kodu girin"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Özel Kod 3
+              </label>
+              <input
+                type="text"
+                value={formData.customCode3}
+                onChange={(e) => setFormData(prev => ({ ...prev, customCode3: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Özel kodu girin"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Özel Kod 4
+              </label>
+              <input
+                type="text"
+                value={formData.customCode4}
+                onChange={(e) => setFormData(prev => ({ ...prev, customCode4: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Özel kodu girin"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Özel Kod 5
+              </label>
+              <input
+                type="text"
+                value={formData.customCode5}
+                onChange={(e) => setFormData(prev => ({ ...prev, customCode5: e.target.value }))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Özel kodu girin"
+              />
             </div>
           </div>
 

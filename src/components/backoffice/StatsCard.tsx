@@ -1,10 +1,10 @@
 import React from 'react';
-import { DivideIcon as LucideIcon } from 'lucide-react';
+import { DivideIcon, LucideIcon } from 'lucide-react';
 
-interface StatsCardProps {
+export interface StatsCardProps {
   title: string;
   value: string;
-  icon: LucideIcon;
+  icon: typeof DivideIcon;
   trend: string;
   trendDirection: 'up' | 'down' | 'neutral';
 }
