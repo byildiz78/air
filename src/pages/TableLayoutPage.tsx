@@ -9,9 +9,9 @@ import { Section, TableData, TableStatus, TableShape, TableSize } from '../types
 
 // Size configurations for collision detection
 const tableSizes = {
-  small: { width: 96, height: 96 },
-  medium: { width: 128, height: 128 },
-  large: { width: 160, height: 160 },
+  small: { width: 80, height: 80 },
+  medium: { width: 96, height: 96 },
+  large: { width: 112, height: 112 },
 };
 
 const shapes: TableShape[] = ['round', 'rectangle', 'square', 'oval'];
@@ -22,8 +22,8 @@ const doTablesOverlap = (table1: TableData, table2: TableData) => {
   const size1 = tableSizes[table1.size];
   const size2 = tableSizes[table2.size];
   
-  // Larger padding for better spacing
-  const padding = 80;
+  // Daha küçük padding ile masaları yakınlaştır
+  const padding = 48;
   
   // Calculate dimensions considering shape
   const width1 = table1.shape === 'rectangle' || table1.shape === 'oval' ? size1.width * 1.5 : size1.width;
@@ -118,21 +118,21 @@ const sectionConfigs = [
     id: 'garden',
     name: 'Bahçe',
     icon: Palmtree,
-    tableCount: 16,
+    tableCount: 12,
     prefix: 'B'
   },
   {
     id: 'salon',
     name: 'Salon',
     icon: Home,
-    tableCount: 20,
+    tableCount: 14,
     prefix: 'S'
   },
   {
     id: 'basement',
     name: 'Alt Kat',
     icon: Warehouse,
-    tableCount: 12,
+    tableCount: 10,
     prefix: 'A'
   }
 ] as const;
@@ -202,87 +202,94 @@ const TableLayoutPage: React.FC = () => {
   return (
     <div className="flex h-[calc(100vh-7rem)]">
       {/* Tables Area */}
-      <div className="flex-1 relative bg-gray-900/30 rounded-lg m-6">
-        {currentSection.tables?.map(table => (
-          <TableComponent
-            key={table.id}
-            table={table}
-            onClick={handleTableClick}
-          />
-        ))}
+      <div 
+        className="flex-1 relative bg-gray-900/10 rounded-lg m-2 bg-cover bg-center bg-no-repeat overflow-hidden"
+        style={{
+          backgroundImage: `linear-gradient(to bottom, rgba(17, 24, 39, 0.7), rgba(17, 24, 39, 0.65)), url('/images/restaurant-bg.jpg')`,
+          backgroundBlendMode: 'multiply'
+        }}
+      >
+        {/* Table Container */}
+        <div className="absolute inset-0 p-4">
+          {currentSection.tables?.map(table => (
+            <TableComponent
+              key={table.number}
+              table={table}
+              onClick={handleTableClick}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Right Sidebar */}
-      <div className="w-96 bg-gray-900/90 border-l border-gray-800 flex flex-col">
-        <div className="flex flex-col h-full p-6">
-          {/* Section Navigation */}
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-white mb-4">Bölümler</h2>
-            <div className="space-y-2">
+      <div className="w-48 bg-gray-900/90 border-l border-gray-800 flex flex-col">
+        <div className="p-3 space-y-3 flex-1">
+          {/* Section Selector */}
+          <div className="flex flex-col gap-1">
+            <h3 className="text-sm font-medium text-white mb-1">Bölümler</h3>
+            <div className="flex flex-col gap-1">
               {sections.map(section => (
                 <button
                   key={section.id}
                   onClick={() => setActiveSection(section.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
+                  className={`flex items-center gap-1.5 px-2 py-1.5 rounded transition-colors text-sm ${
                     activeSection === section.id
                       ? 'bg-blue-600 text-white'
                       : 'text-gray-400 hover:bg-gray-800/50 hover:text-white'
                   }`}
                 >
-                  <section.icon size={20} />
+                  <section.icon size={14} />
                   <span>{section.name}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="flex-1 space-y-6 overflow-auto">
-            {/* Current Section Stats */}
-            <div className="bg-gray-800/50 p-4 rounded-xl">
-              <h3 className="text-lg font-medium text-white mb-3">{currentSection.name}</h3>
-              <OccupancyStats
-                occupiedTables={currentSection.tables?.filter(t => t.status === 'occupied').length || 0}
-                totalTables={currentSection.tables?.length || 0}
-                occupiedSeats={currentSection.tables?.reduce((sum, table) => 
-                  sum + (table.occupiedInfo?.currentGuests || 0), 0) || 0}
-                totalSeats={currentSection.tables?.reduce((sum, table) => sum + table.seats, 0) || 0}
-              />
-            </div>
-
-            {/* Overall Stats */}
-            <div className="bg-gray-800/50 p-4 rounded-xl">
-              <h3 className="text-lg font-medium text-white mb-3">Genel Durum</h3>
-              <OccupancyStats
-                occupiedTables={sections.flatMap(s => s.tables).filter(t => t.status === 'occupied').length}
-                totalTables={sections.reduce((sum, s) => sum + s.tables.length, 0)}
-                occupiedSeats={sections.reduce((sum, section) => 
-                  sum + section.tables.reduce((tableSum, table) => 
-                    tableSum + (table.occupiedInfo?.currentGuests || 0), 0), 0)}
-                totalSeats={sections.reduce((sum, section) => 
-                  sum + section.tables.reduce((tableSum, table) => tableSum + table.seats, 0), 0)}
-              />
-            </div>
+          {/* Section Stats */}
+          <div className="bg-gray-800/50 p-2 rounded-lg">
+            <h3 className="text-sm font-medium text-white mb-2">{currentSection.name}</h3>
+            <OccupancyStats
+              occupiedTables={currentSection.tables?.filter(t => t.status === 'occupied').length || 0}
+              totalTables={currentSection.tables?.length || 0}
+              occupiedSeats={currentSection.tables?.reduce((sum, table) => 
+                sum + (table.occupiedInfo?.currentGuests || 0), 0) || 0}
+              totalSeats={currentSection.tables?.reduce((sum, table) => sum + table.seats, 0) || 0}
+            />
           </div>
 
-          {/* Quick Actions */}
-          <div className="space-y-2 mt-6">
-            <button
-              onClick={() => router.push('/takeaway')}
-              className="w-full flex items-center justify-center gap-2 p-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors"
-            >
-              <Receipt size={20} />
-              <span>Paket Sipariş</span>
-            </button>
-            <button className="w-full flex items-center justify-center gap-2 p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
-              <Calendar size={20} />
-              <span>Rezervasyonlar</span>
-            </button>
-            <button className="w-full flex items-center justify-center gap-2 p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
-              <Users size={20} />
-              <span>Personel</span>
-            </button>
+          {/* Overall Stats */}
+          <div className="bg-gray-800/50 p-2 rounded-lg">
+            <h3 className="text-sm font-medium text-white mb-2">Genel Durum</h3>
+            <OccupancyStats
+              occupiedTables={sections.flatMap(s => s.tables).filter(t => t.status === 'occupied').length}
+              totalTables={sections.reduce((sum, s) => sum + s.tables.length, 0)}
+              occupiedSeats={sections.reduce((sum, section) => 
+                sum + section.tables.reduce((tableSum, table) => 
+                  tableSum + (table.occupiedInfo?.currentGuests || 0), 0), 0)}
+              totalSeats={sections.reduce((sum, section) => 
+                sum + section.tables.reduce((tableSum, table) => tableSum + table.seats, 0), 0)}
+            />
           </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="p-3 space-y-1.5 border-t border-gray-800">
+          <button
+            onClick={() => router.push('/takeaway')}
+            className="w-full flex items-center justify-center gap-1.5 p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+          >
+            <Receipt size={16} />
+            <span>Hesap Yazdır</span>
+          </button>
+          <button className="w-full flex items-center justify-center gap-1.5 p-2 bg-purple-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+            <Calendar size={16} />
+            <span>İsme Çek Açma</span>
+          </button>
+
+          <button className="w-full flex items-center justify-center gap-1.5 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+            <Calendar size={16} />
+            <span>Rezervasyonlar</span>
+          </button>
         </div>
       </div>
     </div>

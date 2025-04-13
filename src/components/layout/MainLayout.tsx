@@ -12,6 +12,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const pathname = usePathname();
   const isBackoffice = pathname?.startsWith('/backoffice');
+  
+  const plainBackgroundPages = ['/expenses', '/recall', '/delivery-customer'];
+  const hideBackground = plainBackgroundPages.includes(pathname || '');
+  const isOrderPage = pathname?.startsWith('/order');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -22,22 +26,24 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Header */}
-      <header className="h-16 shrink-0 bg-gray-900/90 border-b border-gray-800 px-6 flex items-center justify-between">
-        <div className="text-2xl font-bold text-white">Air</div>
-        <div className="text-gray-400">
-          {currentTime.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
-        </div>
-      </header>
+    <div className={`flex flex-col h-screen ${!hideBackground ? 'bg-[url(/images/bg.jpg)] bg-cover bg-center' : 'bg-gray-900'}`}>
+      {/* Header - Hidden in order pages */}
+      {!isOrderPage && (
+        <header className="h-16 shrink-0 bg-gray-900/90 border-b border-gray-800 px-6 flex items-center justify-between">
+          <div className="text-2xl font-bold text-blue">robotPOS Air</div>
+          <div className="text-gray-400">
+            {currentTime.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+          </div>
+        </header>
+      )}
 
       {/* Main Content */}
       <main className="flex-1 min-h-0 overflow-hidden">
         {children}
       </main>
 
-      {/* Footer - Hidden in backoffice pages */}
-      {!isBackoffice && (
+      {/* Footer - Hidden in backoffice and order pages */}
+      {!isBackoffice && !isOrderPage && (
         <footer className="h-14 shrink-0 bg-gray-900/90 border-t border-gray-800 px-6 flex items-center">
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center gap-2 text-gray-400">

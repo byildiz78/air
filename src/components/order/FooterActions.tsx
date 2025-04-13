@@ -17,66 +17,67 @@ const FooterActions: React.FC<FooterActionsProps> = ({
   showTableActions = true,
 }) => {
   return (
-    <div className="bg-gray-900/90 border-t border-gray-800">
+    <div className="w-[100%] bg-gray-900/90 border-t border-gray-800">
       {/* First Row */}
-      <div className="grid grid-cols-4 gap-1 p-1">
+      <div className="grid grid-cols-4 gap-0.5 p-0.5">
         <button 
           onClick={onCheckDiscount}
-          className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded"
+          className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs"
         >
-          <Percent size={18} />
-          <span>ÇEK İNDİRİMİ</span>
+          <Percent size={14} className="shrink-0" />
+          <span className="truncate">ÇEK İND.</span>
         </button>
         <button 
           onClick={onProductDiscount}
-          className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded"
+          className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs"
         >
-          <Percent size={18} />
-          <span>ÜRÜN İNDİRİMİ</span>
+          <Percent size={14} className="shrink-0" />
+          <span className="truncate">ÜRÜN İND.</span>
         </button>
         <button 
           onClick={onCustomerName}
-          className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded"
+          className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs"
         >
-          <Users size={18} />
-          <span>MÜŞTERİ ADI</span>
+          <Users size={14} className="shrink-0" />
+          <span className="truncate">MÜŞTERİ</span>
         </button>
-        <button className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded">
-          <Coins size={18} />
-          <span>PARA PUAN</span>
+        <button className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs">
+          <Coins size={14} className="shrink-0" />
+          <span className="truncate">P.PUAN</span>
         </button>
       </div>
+
       {/* Second Row */}
-      <div className="grid grid-cols-4 gap-1 p-1">
-        <button className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded">
-          <FileText size={18} />
-          <span>SİPARİŞ NOTU</span>
+      <div className="grid grid-cols-4 gap-0.5 p-0.5">
+        <button className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs">
+          <FileText size={14} className="shrink-0" />
+          <span className="truncate">SİP.NOT</span>
         </button>
         {showTableActions ? (
           <>
-            <button className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded">
-              <GitMerge size={18} />
-              <span>AYIR</span>
+            <button className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs">
+              <GitMerge size={14} className="shrink-0" />
+              <span className="truncate">AYIR</span>
             </button>
-            <button className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded">
-              <GitMerge size={18} className="rotate-180" />
-              <span>BİRLEŞTİR</span>
+            <button className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs">
+              <GitMerge size={14} className="shrink-0 rotate-180" />
+              <span className="truncate">BİRLEŞTİR</span>
             </button>
             <button 
               onClick={onOtherOptions}
-              className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded"
+              className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs"
             >
-              <MoreHorizontal size={18} />
-              <span>DİĞER</span>
+              <MoreHorizontal size={14} className="shrink-0" />
+              <span className="truncate">DİĞER</span>
             </button>
           </>
         ) : (
           <button 
             onClick={onOtherOptions}
-            className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded col-span-3"
+            className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs col-span-3"
           >
-            <MoreHorizontal size={18} />
-            <span>DİĞER</span>
+            <MoreHorizontal size={14} className="shrink-0" />
+            <span className="truncate">DİĞER</span>
           </button>
         )}
       </div>

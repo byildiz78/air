@@ -1,8 +1,8 @@
 {
-  "/backoffice/menu/groups/page": "app/backoffice/menu/groups/page.js",
-  "/backoffice/menu/products/message-groups/page": "app/backoffice/menu/products/message-groups/page.js",
-  "/backoffice/maintenance/page": "app/backoffice/maintenance/page.js",
-  "/backoffice/staff/page": "app/backoffice/staff/page.js",
-  "/backoffice/page": "app/backoffice/page.js",
-  "/backoffice/menu/products/page": "app/backoffice/menu/products/page.js"
+  "/not-found": "app/not-found.js",
+  "/page": "app/page.js",
+  "/table-layout/page": "app/table-layout/page.js",
+  "/order/[tableId]/page": "app/order/[tableId]/page.js",
+  "/backoffice/menu/products/page": "app/backoffice/menu/products/page.js",
+  "/backoffice/page": "app/backoffice/page.js"
 }

@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{}"
+self.__REACT_LOADABLE_MANIFEST="{\"..\\\\app\\\\takeaway\\\\page.tsx -> ../../pages/TakeawayPage\":{\"id\":\"..\\\\app\\\\takeaway\\\\page.tsx -> ../../pages/TakeawayPage\",\"files\":[\"static/chunks/_app-pages-browser_src_pages_TakeawayPage_tsx.js\"]}}"

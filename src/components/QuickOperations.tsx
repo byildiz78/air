@@ -6,31 +6,33 @@ const QuickOperations: React.FC = () => {
   const router = useRouter();
 
   return (
-    <div className="glass-darker h-full rounded-lg p-4 shadow-xl">
-      <h2 className="text-xl font-bold text-white mb-4">Hızlı İşlemler</h2>
-      <div className="grid grid-cols-2 gap-4">
-        <button 
-          onClick={() => router.push('/recall')}
-          className="btn-green flex flex-col items-center justify-center text-white p-4 rounded-lg"
-        >
-          <Search size={32} className="mb-2" />
-          <span className="text-sm">Çağır</span>
-        </button>
-        <button className="btn-green flex flex-col items-center justify-center text-white p-4 rounded-lg">
-          <Clipboard size={32} className="mb-2" />
-          <span className="text-sm">Paket Durumu</span>
-        </button>
-        <button 
-          onClick={() => router.push('/expenses')}
-          className="btn-green flex flex-col items-center justify-center text-white p-4 rounded-lg"
-        >
-          <DollarSign size={32} className="mb-2" />
-          <span className="text-sm">Ödeme</span>
-        </button>
-        <button className="btn-green flex flex-col items-center justify-center text-white p-4 rounded-lg">
-          <FileX size={32} className="mb-2" />
-          <span className="text-sm">Çek Kapat</span>
-        </button>
+    <div className="glass-darker rounded-lg p-3 shadow-xl flex-1 min-h-0">
+      <div className="flex flex-col h-full">
+        <h2 className="text-lg font-bold text-white mb-2">Hızlı İşlemler</h2>
+        <div className="grid grid-cols-2 gap-2 min-h-0">
+          <button 
+            onClick={() => router.push('/recall')}
+            className="btn-green flex flex-col items-center justify-center text-white p-2 rounded-lg"
+          >
+            <Search size={24} className="mb-1" />
+            <span className="text-xs">Çağır</span>
+          </button>
+          <button className="btn-green flex flex-col items-center justify-center text-white p-2 rounded-lg">
+            <Clipboard size={24} className="mb-1" />
+            <span className="text-xs">Paket Durumu</span>
+          </button>
+          <button 
+            onClick={() => router.push('/expenses')}
+            className="btn-green flex flex-col items-center justify-center text-white p-2 rounded-lg"
+          >
+            <DollarSign size={24} className="mb-1" />
+            <span className="text-xs">Ödeme</span>
+          </button>
+          <button className="btn-green flex flex-col items-center justify-center text-white p-2 rounded-lg">
+            <FileX size={24} className="mb-1" />
+            <span className="text-xs">Çek Kapat</span>
+          </button>
+        </div>
       </div>
     </div>
   );

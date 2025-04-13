@@ -22,7 +22,7 @@ const LeftMenu: React.FC<LeftMenuProps> = ({
   onCancel,
 }) => {
   return (
-    <div className="w-96 bg-gray-900/90 border-r border-gray-800 flex flex-col">
+    <div className="w-[20%] bg-gray-900/90 border-r border-gray-800 flex flex-col">
       <PageNavigation currentPage={currentPage} onPageChange={onPageChange} />
       
       <CategoryList
@@ -31,12 +31,12 @@ const LeftMenu: React.FC<LeftMenuProps> = ({
         onCategorySelect={onCategorySelect}
       />
 
-      <div className="p-4 border-t border-gray-800">
+      <div className="p-2 border-t border-gray-800">
         <button
           onClick={onCancel}
-          className="w-full h-12 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center"
+          className="w-full h-8 bg-red-600 text-white rounded hover:bg-red-700 transition-colors flex items-center justify-center text-xs"
         >
-          <X size={20} className="mr-2" />
+          <X size={14} className="mr-1" />
           İptal
         </button>
       </div>

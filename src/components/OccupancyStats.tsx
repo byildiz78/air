@@ -42,44 +42,44 @@ const OccupancyStats: React.FC<OccupancyStatsProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 gap-1">
       {/* Table Occupancy Card */}
-      <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-xl p-3 border border-blue-500/20">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-blue-500/20 rounded-lg">
-              <Coffee size={16} className="text-blue-400" />
+      <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded p-1.5 border border-blue-500/20">
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-1">
+            <div className="p-0.5 bg-blue-500/20 rounded">
+              <Coffee size={12} className="text-blue-400" />
             </div>
-            <span className="text-sm text-gray-300">Masalar</span>
+            <span className="text-[10px] text-gray-300">Masalar</span>
           </div>
-          <span className={`text-base font-bold ${getStatusColor(tableOccupancyRate)}`}>
+          <span className={`text-[10px] font-bold ${getStatusColor(tableOccupancyRate)}`}>
             {tableOccupancyRate}%
           </span>
         </div>
         
-        <div className="h-1.5 bg-gray-700/50 rounded-full overflow-hidden mb-2">
+        <div className="h-0.5 bg-gray-700/50 rounded-full overflow-hidden mb-1">
           <div 
             className={`h-full ${getStatusBg(tableOccupancyRate)} transition-all duration-500`}
             style={{ width: `${tableOccupancyRate}%` }}
           />
         </div>
 
-        <div className="flex justify-between items-center text-xs">
-          <span className="text-gray-400">Dolu: {occupiedTables}</span>
-          <span className="text-gray-400">Boş: {totalTables - occupiedTables}</span>
+        <div className="flex justify-between items-center text-[8px]">
+          <span className="text-gray-400">D:{occupiedTables}</span>
+          <span className="text-gray-400">B:{totalTables - occupiedTables}</span>
         </div>
       </div>
 
       {/* Average Seating Time */}
-      <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-xl p-3 border border-green-500/20">
+      <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 rounded p-1.5 border border-green-500/20">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-green-500/20 rounded-lg">
-              <Clock size={16} className="text-green-400" />
+          <div className="flex items-center gap-1">
+            <div className="p-0.5 bg-green-500/20 rounded">
+              <Clock size={12} className="text-green-400" />
             </div>
-            <span className="text-sm text-gray-300">Ort. Oturma</span>
+            <span className="text-[10px] text-gray-300">Süre</span>
           </div>
-          <span className="text-base font-bold text-white">
+          <span className="text-[10px] font-bold text-white">
             {formatTime(averageSeatingTime)}
           </span>
         </div>

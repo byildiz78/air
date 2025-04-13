@@ -147,7 +147,7 @@ const OrderPage: React.FC<{ tableId?: string }> = ({ tableId }) => {
   };
 
   return (
-    <div className="flex h-[calc(100vh-7rem)]">
+    <div className="flex h-screen">
       <LeftMenu
         currentPage={currentPage}
         currentCategories={currentCategories}

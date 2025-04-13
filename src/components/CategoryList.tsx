@@ -13,14 +13,14 @@ const CategoryList: React.FC<CategoryListProps> = ({
   onCategorySelect,
 }) => {
   return (
-    <div className="p-4 flex-1 overflow-y-auto">
-      <div className="grid grid-cols-2 gap-2">
+    <div className="p-2 flex-1 overflow-y-auto">
+      <div className="grid grid-cols-2 gap-1.5">
         {categories.map(category => (
           <button
             key={category.id}
             onClick={() => onCategorySelect(category)}
             className={`
-              relative group h-24 rounded-xl transition-all duration-300 border-2
+              relative group h-16 rounded-lg transition-all duration-300 border
               ${selectedCategory.id === category.id
                 ? 'bg-gradient-to-br from-blue-600/90 to-blue-700/90 border-blue-400 shadow-lg shadow-blue-500/20'
                 : 'bg-gradient-to-br from-gray-800/80 to-gray-700/80 border-gray-600/30 hover:border-gray-500/50'}
@@ -33,27 +33,22 @@ const CategoryList: React.FC<CategoryListProps> = ({
             </div>
 
             {/* Content */}
-            <div className="relative h-full flex flex-col items-center justify-center">
+            <div className="relative h-full flex flex-col items-center justify-center py-1">
               <category.icon 
-                size={24} 
-                className={`mb-2 transition-all duration-300 ${
+                size={18} 
+                className={`mb-1 transition-all duration-300 ${
                   selectedCategory.id === category.id 
                     ? 'text-blue-200' 
                     : 'text-gray-400 group-hover:text-gray-300'
                 }`}
               />
-              <span className={`text-sm font-medium text-center px-2 transition-all duration-300 ${
+              <span className={`text-xs font-medium text-center px-1 transition-all duration-300 ${
                 selectedCategory.id === category.id
                   ? 'text-white'
                   : 'text-gray-300 group-hover:text-white'
               }`}>
                 {category.name}
               </span>
-
-              {/* Active Indicator */}
-              {selectedCategory.id === category.id && (
-                <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-12 h-1 bg-blue-400 rounded-full"></div>
-              )}
             </div>
           </button>
         ))}

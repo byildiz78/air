@@ -17,9 +17,9 @@ const TableComponent: React.FC<TableProps> = ({ table, onClick }) => {
   const getTableShape = (shape: TableShape, size: TableSize) => {
     const baseClasses = 'transition-all duration-300 border-2';
     const sizeClasses = {
-      small: 'w-24 h-24',
-      medium: 'w-32 h-32',
-      large: 'w-40 h-40'
+      small: 'w-20 h-20',
+      medium: 'w-24 h-24',
+      large: 'w-28 h-28'
     }[size];
 
     switch (shape) {
@@ -68,39 +68,39 @@ const TableComponent: React.FC<TableProps> = ({ table, onClick }) => {
         {table.status === 'occupied' && table.occupiedInfo ? (
           <>
             {/* Customer Info */}
-            <div className="absolute -top-2 -left-2">
-              <div className="bg-blue-800/50 rounded-lg px-2 py-0.5 flex items-center space-x-1">
-                <Users size={14} className="text-blue-300" />
-                <span className="text-white text-sm font-medium">
+            <div className="absolute -top-1 -left-1">
+              <div className="bg-blue-800/50 rounded px-1.5 py-0.5 flex items-center space-x-1">
+                <Users size={12} className="text-blue-300" />
+                <span className="text-white text-xs font-medium">
                   {table.occupiedInfo.currentGuests}/{table.seats}
                 </span>
               </div>
             </div>
 
             {/* Time Info */}
-            <div className="absolute -bottom-2 -right-2">
-              <div className="bg-blue-800/40 rounded-lg px-2 py-0.5 flex items-center space-x-1">
-                <Clock size={14} className="text-blue-300" />
-                <span className="text-white text-sm font-medium">
+            <div className="absolute -bottom-1 -right-1">
+              <div className="bg-blue-800/40 rounded px-1.5 py-0.5 flex items-center space-x-1">
+                <Clock size={12} className="text-blue-300" />
+                <span className="text-white text-xs font-medium">
                   {formatTime(table.occupiedInfo.occupiedTime)}
                 </span>
               </div>
             </div>
 
             {/* Table Number and Waiter */}
-            <span className="text-2xl font-bold text-white mb-1">{table.number}</span>
-            <div className="bg-blue-800/30 rounded-lg px-2 py-0.5 flex items-center space-x-1">
-              <User size={14} className="text-blue-300" />
-              <span className="text-sm font-medium text-white">{table.occupiedInfo.waiter}</span>
+            <span className="text-xl font-bold text-white mb-0.5">{table.number}</span>
+            <div className="bg-blue-800/30 rounded px-1.5 py-0.5 flex items-center space-x-1">
+              <User size={12} className="text-blue-300" />
+              <span className="text-xs font-medium text-white">{table.occupiedInfo.waiter}</span>
             </div>
           </>
         ) : (
           <>
-            <span className="text-xl font-bold text-gray-400">{table.number}</span>
-            <div className="text-center mt-1">
+            <span className="text-lg font-bold text-gray-400">{table.number}</span>
+            <div className="text-center mt-0.5">
               <div className="flex items-center justify-center space-x-1">
-                <Users size={14} className="text-gray-500" />
-                <span className="text-gray-400 text-sm">{table.seats} Kişilik</span>
+                <Users size={12} className="text-gray-500" />
+                <span className="text-gray-400 text-xs">{table.seats} Kişilik</span>
               </div>
             </div>
           </>
