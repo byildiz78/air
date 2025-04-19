@@ -78,32 +78,32 @@ const BarcodeInput: React.FC<BarcodeInputProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="relative">
-      <form onSubmit={handleSubmit} className="relative">
-        <div className="relative">
-          <Barcode className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+    <div className="relative w-full">
+      <form onSubmit={handleSubmit} className="relative w-full">
+        <div className="relative flex items-center w-full">
+          <Barcode className="absolute left-2 text-gray-400" size={16} />
           <input
             ref={inputRef}
             type="text"
             value={barcode}
             onChange={(e) => setBarcode(e.target.value.slice(0, 7))}
-            className="w-full pl-11 pr-12 py-2.5 bg-gray-700/50 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-            placeholder="Barkod okutun veya girin..."
+            className="w-full pl-8 pr-8 py-2 bg-gray-700/50 border border-white/10 rounded-lg text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+            placeholder="Barkod okutun..."
             autoComplete="off"
           />
           <button
             type="button"
             onClick={() => setShowNumpad(!showNumpad)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+            className="absolute right-2 text-gray-400 hover:text-white transition-colors"
           >
-            <Calculator size={20} />
+            <Calculator size={16} />
           </button>
         </div>
       </form>
 
       {/* Numpad Modal */}
       {showNumpad && (
-        <div className="absolute top-full left-0 right-0 mt-2 p-4 bg-gray-900/95 border border-white/10 rounded-lg shadow-xl z-50 numpad-container">
+        <div className="absolute top-full left-0 right-0 mt-1 p-2 bg-gray-900/95 border border-white/10 rounded-lg shadow-xl z-50 numpad-container">
           <Numpad onInput={handleNumpadInput} />
         </div>
       )}

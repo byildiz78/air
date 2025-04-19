@@ -7,6 +7,8 @@ interface FooterActionsProps {
   onCustomerName: () => void;
   onOtherOptions: () => void;
   showTableActions?: boolean;
+  selectedProductId?: string | null;
+  hasProductInCart?: boolean;
 }
 
 const FooterActions: React.FC<FooterActionsProps> = ({
@@ -15,68 +17,74 @@ const FooterActions: React.FC<FooterActionsProps> = ({
   onCustomerName,
   onOtherOptions,
   showTableActions = true,
+  selectedProductId = null,
+  hasProductInCart = false,
 }) => {
+  const buttonClass = "w-full flex items-center justify-center gap-1.5 transition-all duration-150 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-gray-100 py-2 px-2 rounded-lg text-xs font-medium shadow-sm";
+  const iconClass = "shrink-0 opacity-80";
+
   return (
-    <div className="w-[100%] bg-gray-900/90 border-t border-gray-800">
+    <div className="w-[100%] bg-gray-900/95 border-t border-gray-800 p-1.5 space-y-1.5">
       {/* First Row */}
-      <div className="grid grid-cols-4 gap-0.5 p-0.5">
+      <div className="grid grid-cols-4 gap-1.5">
         <button 
           onClick={onCheckDiscount}
-          className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs"
+          className={`${buttonClass} hover:bg-emerald-800 active:bg-emerald-700`}
         >
-          <Percent size={14} className="shrink-0" />
+          <Percent size={15} className={iconClass} />
           <span className="truncate">ÇEK İND.</span>
         </button>
         <button 
-          onClick={onProductDiscount}
-          className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs"
+          onClick={hasProductInCart ? onProductDiscount : undefined}
+          disabled={!hasProductInCart}
+          className={`${buttonClass} hover:bg-emerald-800 active:bg-emerald-700 ${!hasProductInCart ? 'opacity-40 cursor-not-allowed' : ''}`}
         >
-          <Percent size={14} className="shrink-0" />
+          <Percent size={15} className={iconClass} />
           <span className="truncate">ÜRÜN İND.</span>
         </button>
         <button 
           onClick={onCustomerName}
-          className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs"
+          className={`${buttonClass} hover:bg-blue-800 active:bg-blue-700`}
         >
-          <Users size={14} className="shrink-0" />
+          <Users size={15} className={iconClass} />
           <span className="truncate">MÜŞTERİ</span>
         </button>
-        <button className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs">
-          <Coins size={14} className="shrink-0" />
+        <button className={`${buttonClass} hover:bg-amber-800 active:bg-amber-700`}>
+          <Coins size={15} className={iconClass} />
           <span className="truncate">P.PUAN</span>
         </button>
       </div>
 
       {/* Second Row */}
-      <div className="grid grid-cols-4 gap-0.5 p-0.5">
-        <button className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs">
-          <FileText size={14} className="shrink-0" />
+      <div className="grid grid-cols-4 gap-1.5">
+        <button className={`${buttonClass} hover:bg-blue-800 active:bg-blue-700`}>
+          <FileText size={15} className={iconClass} />
           <span className="truncate">SİP.NOT</span>
         </button>
         {showTableActions ? (
           <>
-            <button className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs">
-              <GitMerge size={14} className="shrink-0" />
+            <button className={`${buttonClass} hover:bg-purple-800 active:bg-purple-700`}>
+              <GitMerge size={15} className={iconClass} />
               <span className="truncate">AYIR</span>
             </button>
-            <button className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs">
-              <GitMerge size={14} className="shrink-0 rotate-180" />
+            <button className={`${buttonClass} hover:bg-purple-800 active:bg-purple-700`}>
+              <GitMerge size={15} className={`${iconClass} rotate-180`} />
               <span className="truncate">BİRLEŞTİR</span>
             </button>
             <button 
               onClick={onOtherOptions}
-              className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs"
+              className={`${buttonClass} hover:bg-gray-700 active:bg-gray-600`}
             >
-              <MoreHorizontal size={14} className="shrink-0" />
+              <MoreHorizontal size={15} className={iconClass} />
               <span className="truncate">DİĞER</span>
             </button>
           </>
         ) : (
           <button 
             onClick={onOtherOptions}
-            className="w-full flex items-center justify-center gap-1 bg-blue-600/90 hover:bg-blue-700/90 text-white py-1 px-1.5 rounded text-xs col-span-3"
+            className={`${buttonClass} col-span-3 hover:bg-gray-700 active:bg-gray-600`}
           >
-            <MoreHorizontal size={14} className="shrink-0" />
+            <MoreHorizontal size={15} className={iconClass} />
             <span className="truncate">DİĞER</span>
           </button>
         )}

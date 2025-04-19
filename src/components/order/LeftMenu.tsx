@@ -22,14 +22,16 @@ const LeftMenu: React.FC<LeftMenuProps> = ({
   onCancel,
 }) => {
   return (
-    <div className="w-[20%] bg-gray-900/90 border-r border-gray-800 flex flex-col">
+    <div className="w-[20%] bg-gray-900/90 border-r border-gray-800 flex flex-col h-full">
       <PageNavigation currentPage={currentPage} onPageChange={onPageChange} />
       
-      <CategoryList
-        categories={currentCategories}
-        selectedCategory={selectedCategory}
-        onCategorySelect={onCategorySelect}
-      />
+      <div className="flex-1 flex flex-col min-h-0">
+        <CategoryList
+          categories={currentCategories}
+          selectedCategory={selectedCategory}
+          onCategorySelect={onCategorySelect}
+        />
+      </div>
 
       <div className="p-2 border-t border-gray-800">
         <button

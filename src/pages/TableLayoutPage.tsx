@@ -265,27 +265,6 @@ const TableLayoutPage: React.FC = () => {
               }}
             />
           </div>
-
-          {/* Overall Stats */}
-          <div className="bg-gray-800/50 p-2 rounded-lg">
-            <h3 className="text-sm font-medium text-white mb-2">Genel Durum</h3>
-            <OccupancyStats
-              sectionStats={{
-                occupiedTables: sections.flatMap(s => s.tables).filter(t => t.status === 'occupied').length,
-                totalTables: sections.flatMap(s => s.tables).length,
-                occupiedSeats: sections.flatMap(s => s.tables).reduce((sum, table) => 
-                  sum + (table.occupiedInfo?.currentGuests || 0), 0),
-                totalSeats: sections.flatMap(s => s.tables).reduce((sum, table) => sum + table.seats, 0)
-              }}
-              restaurantStats={{
-                occupiedTables: sections.flatMap(s => s.tables).filter(t => t.status === 'occupied').length,
-                totalTables: sections.flatMap(s => s.tables).length,
-                occupiedSeats: sections.flatMap(s => s.tables).reduce((sum, table) => 
-                  sum + (table.occupiedInfo?.currentGuests || 0), 0),
-                totalSeats: sections.flatMap(s => s.tables).reduce((sum, table) => sum + table.seats, 0)
-              }}
-            />
-          </div>
         </div>
 
         {/* Quick Actions */}

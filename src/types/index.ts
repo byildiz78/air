@@ -35,9 +35,12 @@ export interface Product {
   name: string;
   price: number;
   icon: LucideIcon;
+  barcode?: string;
   isCombo?: boolean;
   comboOptions?: ComboOptions;
-  barcode?: string;
+  stock?: number;
+  description?: string;
+  category?: string;
 }
 
 export interface ComboOptions {

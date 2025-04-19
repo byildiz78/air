@@ -1,311 +1,334 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Plus, Minus, CreditCard, Wallet, DollarSign, Percent, Clock, User, ChevronDown, ChevronUp, Receipt, Calendar, Store } from 'lucide-react';
+import { Plus, Minus, Store, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import { OrderItem, CartDiscount, Payment } from '../types';
-import BarcodeInput from './BarcodeInput';
 import PaymentModal from './PaymentModal';
+import ProductMessageModal from './ProductMessageModal';
+import ProductDiscountModal from './ProductDiscountModal';
+import SaleTypeHeader from './SaleTypeHeader';
+import ServiceTypeModal from './ServiceTypeModal';
+import CartInfoHeader from './CartInfoHeader';
+import CartItemList from './CartItemList';
+import CartSummary from './CartSummary';
+import CartActionBar from './CartActionBar';
+import CartPaymentButtons from './CartPaymentButtons';
+import { productMessages, productMessageGroups } from '../data/productMessages';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
+import ReplayIcon from '@mui/icons-material/Replay';
+import PercentIcon from '@mui/icons-material/Percent';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import FastfoodIcon from '@mui/icons-material/Fastfood';
+import LocalDiningIcon from '@mui/icons-material/LocalDining';
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
+import PaymentIcon from '@mui/icons-material/Payment';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import MessageIcon from '@mui/icons-material/Message';
+import PrintIcon from '@mui/icons-material/Print';
 
 interface CartProps {
   orderItems: OrderItem[];
   payments: Payment[];
   discount?: CartDiscount;
   tableId: string;
+  checkDiscount?: number;
+  productDiscount?: number;
   onIncrement: (productId: string) => void;
   onDecrement: (productId: string) => void;
   onPayment: (type: 'cash' | 'card' | 'multinet' | 'sodexo', amount: number) => void;
   onBarcodeSubmit: (barcode: string) => void;
+  onCheckDiscount?: () => void;
 }
 
-const Cart: React.FC<CartProps> = ({ 
-  orderItems, 
+interface OrderItemWithMessages extends OrderItem {
+  messages?: { id: string; name: string }[];
+}
+
+const paymentButtons = [
+  { key: 'cash', label: 'NAKİT', color: 'bg-green-600 hover:bg-green-700', text: 'text-white' },
+  { key: 'card', label: 'KREDİ KARTI', color: 'bg-red-600 hover:bg-red-700', text: 'text-white' },
+  { key: 'hesap', label: 'HESAP', color: 'bg-blue-500 hover:bg-blue-600', text: 'text-white' },
+  { key: 'cek_kapat', label: 'ÇEK KAPAT', color: 'bg-blue-800 hover:bg-blue-900', text: 'text-white' },
+  { key: 'Yemek Çeki', label: 'Yemek Çeki', color: 'bg-yellow-500 hover:bg-yellow-600 text-black', icon: <RestaurantIcon fontSize="medium" /> },
+  { key: 'mesajlar', label: 'MESAJLAR', color: 'bg-yellow-400 hover:bg-yellow-500', text: 'text-black' },
+  { key: 'tamam', label: 'TAMAM', color: 'bg-green-600 hover:bg-green-700', text: 'text-white' },
+  { key: 'multinet', label: 'Multinet', color: 'bg-neutral-800 hover:bg-neutral-700', text: 'text-white', icon: <RestaurantIcon fontSize="medium" /> },
+  { key: 'ticket', label: 'Ticket', color: 'bg-neutral-900 hover:bg-neutral-700', text: 'text-white', icon: <CardGiftcardIcon fontSize="medium" /> },
+  { key: 'sodexo', label: 'Sodexo', color: 'bg-neutral-800 hover:bg-neutral-700', text: 'text-white', icon: <FastfoodIcon fontSize="medium" /> },
+  { key: 'setcard', label: 'Setcard', color: 'bg-neutral-900 hover:bg-neutral-700', text: 'text-white', icon: <LocalDiningIcon fontSize="medium" /> },
+];
+
+const paymentIconMap: Record<string, React.ReactNode> = {
+  cash: <PaymentIcon fontSize="small" />,
+  card: <CreditCardIcon fontSize="small" />,
+  hesap: <PrintIcon fontSize="small" />,
+  cek_kapat: <ReceiptIcon fontSize="small" />,
+  mesajlar: <MessageIcon fontSize="small" />,
+  tamam: null,
+  'Yemek Çeki': <RestaurantIcon fontSize="small" />,
+};
+
+const Cart: React.FC<CartProps & { style?: React.CSSProperties }> = ({
+  orderItems,
   payments,
-  discount, 
-  tableId, 
-  onIncrement, 
-  onDecrement, 
+  discount,
+  tableId,
+  checkDiscount = 0,
+  productDiscount = 0,
+  onIncrement,
+  onDecrement,
   onPayment,
-  onBarcodeSubmit 
+  onBarcodeSubmit,
+  onCheckDiscount,
+  style
 }) => {
-  const [expandedItems, setExpandedItems] = React.useState<string[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [refundMode, setRefundMode] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedPaymentType, setSelectedPaymentType] = useState<'cash' | 'card' | 'multinet' | 'sodexo'>('cash');
-  const [saleType, setSaleType] = useState<'Fişli Satış' | 'Faturalı Satış'>('Fişli Satış');
+  const [selectedPaymentType, setSelectedPaymentType] = useState<string | null>(null);
+  const [isProductMessageModalOpen, setIsProductMessageModalOpen] = useState(false);
+  const [isProductDiscountModalOpen, setIsProductDiscountModalOpen] = useState(false);
+  const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
+  const [productMessageSelections, setProductMessageSelections] = useState<{ [productId: string]: string[] }>({});
+  const [productDiscounts, setProductDiscounts] = useState<{ [productId: string]: number }>({});
   const cartItemsRef = useRef<HTMLDivElement>(null);
   const lastItemRef = useRef<HTMLDivElement>(null);
+  const [isMealTicketModalOpen, setIsMealTicketModalOpen] = useState(false);
 
-  // Get current date and time
   const now = new Date();
-  const formattedDate = now.toLocaleDateString('tr-TR');
   const formattedTime = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-
-  useEffect(() => {
-    if (orderItems.length > 0 && lastItemRef.current) {
-      lastItemRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }
-  }, [orderItems]);
-
   const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0);
-  const discountAmount = discount ? (discount.type === 'check' ? discount.amount : 0) : 0;
-  const totalAmount = subtotal - discountAmount;
-  const remainingAmount = totalAmount - totalPaid;
 
-  const toggleExpand = (productId: string) => {
-    setExpandedItems(prev => 
-      prev.includes(productId) 
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
-  };
+  const [saleType, setSaleType] = useState<'Fişli Satış' | 'Faturalı Satış'>('Fişli Satış');
+  const [serviceType, setServiceType] = useState('MASA SERVİS');
+  const serviceTypes = [
+    'MASA SERVİS',
+    'RESTORAN SATIŞ',
+    'TEZGAH SATIŞ',
+    'PAKET SATIŞ',
+  ];
+  const gelirMerkezi = 'Robotpos';
+  const cekNo = '0';
+  const terminalNo = '1';
+  const acilisSaati = formattedTime;
 
-  const handlePaymentClick = (type: 'cash' | 'card' | 'multinet' | 'sodexo') => {
+  const totalDiscount = (checkDiscount || 0) + (productDiscount || 0);
+
+  // Calculate net total considering per-product discounts
+  const netTotal = orderItems.reduce((sum, item) => {
+    const productDiscountPercent = productDiscounts[item.productId] || 0;
+    const productDiscountAmount = item.price * productDiscountPercent / 100;
+    const checkDiscountAmount = checkDiscount > 0 ? (item.price * checkDiscount / 100) : 0;
+    const discountedPrice = Math.max(0, item.price - productDiscountAmount - checkDiscountAmount);
+    return sum + discountedPrice * item.quantity;
+  }, 0);
+
+  // Calculate per-product and total product discount for summary
+  const totalProductDiscount = orderItems.reduce((sum, item) => {
+    const productDiscountPercent = productDiscounts[item.productId] || 0;
+    const discountAmount = item.price * (productDiscountPercent / 100) * item.quantity;
+    return sum + discountAmount;
+  }, 0);
+
+  const handleSelect = (idx: number) => setSelectedIndex(idx);
+  const handleExpand = (idx: number) => setExpandedIndex(expandedIndex === idx ? null : idx);
+  const handlePaymentClick = (type: string) => {
     setSelectedPaymentType(type);
-    if (type === 'cash') {
-      setIsPaymentModalOpen(true);
-    } else {
-      onPayment(type, remainingAmount);
-    }
+    setIsPaymentModalOpen(true);
   };
-
   const handlePaymentComplete = (amount: number) => {
     setIsPaymentModalOpen(false);
-    onPayment(selectedPaymentType, amount);
+    if (selectedPaymentType && ['cash','card','multinet','sodexo'].includes(selectedPaymentType)) {
+      onPayment(selectedPaymentType as 'cash' | 'card' | 'multinet' | 'sodexo', amount);
+    }
   };
 
+  const handleOpenProductMessageModal = () => setIsProductMessageModalOpen(true);
+  const handleCloseProductMessageModal = () => setIsProductMessageModalOpen(false);
+  const handleAssignMessages = (productId: string, selectedMsgs: string[]) => {
+    setProductMessageSelections(prev => ({ ...prev, [productId]: selectedMsgs }));
+    // Burada istenirse orderItems'e mesajlar eklenebilir veya üst componente iletilebilir
+  };
+
+  const handleMealTicketClick = () => setIsMealTicketModalOpen(true);
+  const handleMealTicketClose = () => setIsMealTicketModalOpen(false);
+
+  const handleCompleteClick = () => {
+    handlePaymentClick('complete');
+  };
+
+  const paymentButtonsForComponent = paymentButtons.filter(btn => !['multinet','ticket','sodexo','setcard'].includes(btn.key)).map(btn => ({
+    label: btn.label,
+    color: btn.color,
+    icon: paymentIconMap[btn.key] || btn.icon,
+    onClick: btn.key === 'mesajlar' ? handleOpenProductMessageModal : btn.key === 'tamam' ? handleCompleteClick : btn.key === 'Yemek Çeki' ? handleMealTicketClick : () => handlePaymentClick(btn.key),
+    disabled: 'disabled' in btn ? Boolean((btn as any).disabled) : false,
+    doubleHeight: btn.key === 'card',
+  }));
+
+  useEffect(() => {
+    if (lastItemRef.current) {
+      lastItemRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [orderItems.length]);
+
+  useEffect(() => {
+    setSelectedIndex(null);
+  }, [orderItems.length]);
+
+  // Ürün bazında indirim desteği: orderItems dizisindeki her item için item.discount veya item.discountPercent kullanılabilir.
+  // Çek indirimi: checkDiscount tüm ürünlere eşit oranda dağıtılır.
+
+  // Her ürün için çek indirimi payı:
+  const checkDiscountPerItem = orderItems.length > 0 ? (checkDiscount || 0) / orderItems.length : 0;
+
+  // Sepet ürünleri, mesajlar ile birlikte gösterilecek şekilde hazırlanıyor
+  const orderItemsWithMessages: OrderItemWithMessages[] = orderItems.map(item => ({
+    ...item,
+    messages: Array.isArray(productMessageSelections[item.productId])
+      ? productMessageSelections[item.productId].map(msgId => {
+          const msg = productMessages.find(m => m.id === msgId);
+          return msg ? { id: msg.id, name: msg.name } : null;
+        }).filter(Boolean) as { id: string; name: string }[]
+      : [],
+  }));
+
   return (
-    <div className="w-[22.5%] bg-gradient-to-br from-gray-900/95 to-gray-800/95 border-l border-white/10 flex flex-col h-full">
-      {/* Cart Header */}
-      <div className="flex-none border-b border-white/10">
-        {/* Sale Type and Info Bar */}
-        <div className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 p-1">
-          <div className="flex items-center justify-between gap-1">
-            <button 
-              onClick={() => setSaleType(prev => prev === 'Fişli Satış' ? 'Faturalı Satış' : 'Fişli Satış')}
-              className={`flex-1 flex items-center justify-center gap-1 py-1 px-2 rounded transition-all duration-300 ${
-                saleType === 'Fişli Satış'
-                  ? 'bg-gradient-to-br from-green-500/90 to-green-600/90 hover:from-green-600/90 hover:to-green-700/90 text-white'
-                  : 'bg-gradient-to-br from-blue-500/90 to-blue-600/90 hover:from-blue-600/90 hover:to-blue-700/90 text-white'
-              }`}
-            >
-              <Receipt size={14} />
-              <span className="font-medium text-xs">{saleType}</span>
-            </button>
-            <div className="flex items-center gap-1 bg-gray-900/50 px-2 py-1 rounded border border-white/5">
-              <Clock size={12} className="text-gray-400" />
-              <span className="text-white text-xs">{formattedTime}</span>
-            </div>
-          </div>
-
-          {/* Info Grid */}
-          <div className="grid grid-cols-3 gap-1 mt-1">
-            <div className="flex items-center gap-1 bg-gray-900/50 px-1.5 py-1 rounded border border-white/5">
-              <Receipt size={12} className="text-gray-400" />
-              <span className="text-white text-xs">1234</span>
-            </div>
-            <div className="flex items-center gap-1 bg-gray-900/50 px-1.5 py-1 rounded border border-white/5">
-              <Calendar size={12} className="text-gray-400" />
-              <span className="text-white text-xs truncate">{formattedDate}</span>
-            </div>
-            <div className="flex items-center gap-1 bg-gray-900/50 px-1.5 py-1 rounded border border-white/5">
-              <User size={12} className="text-gray-400" />
-              <span className="text-white text-xs truncate">Ahmet Y.</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Barcode Input */}
-        <div className="p-1">
-          <BarcodeInput onSubmit={onBarcodeSubmit} />
-        </div>
-      </div>
-
-      {/* Cart Items */}
-      <div ref={cartItemsRef} className="flex-1 overflow-y-auto p-1 space-y-1">
-        {/* Payments Section */}
-        {payments.length > 0 && (
-          <div className="bg-green-900/20 rounded p-2 border border-green-500/20 mb-2">
-            <h3 className="text-green-400 font-medium text-xs mb-1">Ödemeler</h3>
-            <div className="space-y-1">
-              {payments.map((payment, index) => (
-                <div key={index} className="flex justify-between items-center text-xs">
-                  <div className="flex items-center gap-1">
-                    <span className="text-green-400">{payment.type === 'cash' ? 'Nakit' : 'Kart'}</span>
-                    <span className="text-gray-400">{payment.timestamp}</span>
-                  </div>
-                  <span className="text-green-400 font-medium">{payment.amount.toFixed(2)} TL</span>
-                </div>
-              ))}
-              <div className="border-t border-green-500/20 mt-1 pt-1 flex justify-between">
-                <span className="text-green-400 text-xs">Toplam Ödenen</span>
-                <span className="text-green-400 font-bold text-xs">{totalPaid.toFixed(2)} TL</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {orderItems.map((item, index) => (
-          <div
-            key={item.productId}
-            ref={index === orderItems.length - 1 ? lastItemRef : null}
-            className="bg-gradient-to-br from-gray-800/80 to-gray-700/80 rounded border border-white/5 shadow-lg overflow-hidden"
-          >
-            {/* Item content */}
-            <div className="p-2">
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <div className="flex justify-between items-center mb-0.5">
-                    <div className="flex items-center gap-1">
-                      <span className="text-xs font-medium text-white">{item.name}</span>
-                      {item.comboSelections && (
-                        <button
-                          onClick={() => toggleExpand(item.productId)}
-                          className="p-0.5 rounded-full hover:bg-gray-700/50"
-                        >
-                          {expandedItems.includes(item.productId) ? (
-                            <ChevronUp size={12} className="text-blue-400" />
-                          ) : (
-                            <ChevronDown size={12} className="text-blue-400" />
-                          )}
-                        </button>
-                      )}
-                    </div>
-                    <span className="text-blue-400 font-bold text-xs">{item.price} TL</span>
-                  </div>
-                  
-                  {item.addedBy && item.addedAt && (
-                    <div className="flex items-center gap-2 text-[10px] text-gray-400">
-                      <div className="flex items-center gap-0.5">
-                        <User size={10} />
-                        <span>{item.addedBy}</span>
-                      </div>
-                      <div className="flex items-center gap-0.5">
-                        <Clock size={10} />
-                        <span>{item.addedAt}</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex items-center gap-0.5 ml-1">
-                  <button
-                    onClick={() => onDecrement(item.productId)}
-                    className="p-0.5 bg-red-500/80 hover:bg-red-600/80 text-white rounded transition-colors"
-                  >
-                    <Minus size={12} />
-                  </button>
-                  <span className="w-4 text-center text-white font-medium text-xs">
-                    {item.quantity}
-                  </span>
-                  <button
-                    onClick={() => onIncrement(item.productId)}
-                    className="p-0.5 bg-green-500/80 hover:bg-green-600/80 text-white rounded transition-colors"
-                  >
-                    <Plus size={12} />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Combo Selections */}
-            {item.comboSelections && expandedItems.includes(item.productId) && (
-              <div className="bg-gray-900/50 border-t border-white/5 p-1">
-                <div className="space-y-0.5 text-[10px]">
-                  <div className="flex items-center justify-between text-gray-300">
-                    <span>• {item.comboSelections.mainItem.name}</span>
-                    {item.comboSelections.mainItem.extraPrice && (
-                      <span className="text-blue-400">+{item.comboSelections.mainItem.extraPrice} TL</span>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-between text-gray-300">
-                    <span>• {item.comboSelections.side.name}</span>
-                    {item.comboSelections.side.extraPrice && (
-                      <span className="text-blue-400">+{item.comboSelections.side.extraPrice} TL</span>
-                    )}
-                  </div>
-                  <div className="flex items-center justify-between text-gray-300">
-                    <span>• {item.comboSelections.drink.name}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* Payment Section */}
-      <div className="flex-none border-t border-white/10 bg-gradient-to-br from-gray-900/90 to-gray-800/90 p-2">
-        {/* Totals */}
-        <div className="mb-2 space-y-1">
-          {discount && (
-            <>
-              <div className="flex justify-between items-center text-gray-300 bg-gray-800/50 p-1.5 rounded text-xs">
-                <span>Ara Toplam</span>
-                <span>{subtotal.toFixed(2)} TL</span>
-              </div>
-              <div className="flex justify-between items-center text-green-400 bg-green-900/20 p-1.5 rounded text-xs">
-                <div className="flex items-center gap-1">
-                  <Percent size={12} />
-                  <span>İndirim</span>
-                </div>
-                <span>-{discountAmount.toFixed(2)} TL</span>
-              </div>
-            </>
-          )}
-
-          {payments.length > 0 && (
-            <div className="flex justify-between items-center text-green-400 bg-green-900/20 p-1.5 rounded text-xs">
-              <span>Ödenen</span>
-              <span>-{totalPaid.toFixed(2)} TL</span>
-            </div>
-          )}
-
-          <div className="flex justify-between items-center p-2 bg-gradient-to-br from-blue-600/20 to-blue-500/20 rounded border border-blue-500/20">
-            <span className="text-sm text-gray-200">
-              {payments.length > 0 ? 'Kalan' : 'Toplam'}
-            </span>
-            <span className="text-base font-bold text-white">{remainingAmount.toFixed(2)} TL</span>
+    <div
+      className="bg-white flex flex-col h-full border-l border-gray-800 relative overflow-hidden"
+      style={{height:'100vh', ...style}}
+    >
+      {/* Fişli/Faturalı Satış başlığı ve servis tipi */}
+      <SaleTypeHeader
+        saleType={saleType}
+        setSaleType={setSaleType}
+        serviceType={serviceType}
+        onServiceTypeClick={() => setIsServiceModalOpen(true)}
+      />
+      {/* Servis Tipi Modal */}
+      <ServiceTypeModal
+        isOpen={isServiceModalOpen}
+        serviceTypes={serviceTypes}
+        serviceType={serviceType}
+        setServiceType={setServiceType}
+        onClose={() => setIsServiceModalOpen(false)}
+      />
+      {/* üst bilgi */}
+      <CartInfoHeader
+        cekNo={cekNo}
+        terminalNo={terminalNo}
+        tableId={tableId}
+        acilisSaati={acilisSaati}
+      />
+      {/* Cart Items & Watermark */}
+      <CartItemList
+        orderItems={orderItemsWithMessages}
+        selectedIndex={selectedIndex}
+        handleSelect={handleSelect}
+        lastItemRef={lastItemRef}
+        productDiscounts={productDiscounts}
+        checkDiscount={checkDiscount}
+        setIsProductDiscountModalOpen={setIsProductDiscountModalOpen}
+        setIsProductMessageModalOpen={setIsProductMessageModalOpen}
+        onIncrement={onIncrement}
+        onDecrement={onDecrement}
+      />
+      {/* +, - ve İade Modu Butonları */}
+      <CartActionBar
+        onIncrement={selectedIndex !== null && orderItems[selectedIndex] ? () => onIncrement(orderItems[selectedIndex].productId) : () => {}}
+        onDecrement={selectedIndex !== null && orderItems[selectedIndex] ? () => onDecrement(orderItems[selectedIndex].productId) : () => {}}
+        refundMode={refundMode}
+        setRefundMode={setRefundMode}
+        disableDecrement={selectedIndex === null}
+        disableIncrement={selectedIndex === null}
+        onCheckDiscount={onCheckDiscount || (() => {})}
+      />
+      {/* Toplam ve indirimler */}
+      <CartSummary
+        checkDiscount={checkDiscount}
+        totalProductDiscount={totalProductDiscount}
+        netTotal={netTotal}
+      />
+      {/* Ödeme butonları */}
+      <CartPaymentButtons 
+        paymentButtons={paymentButtonsForComponent}
+        onCompleteClick={handleCompleteClick}
+        onMessageClick={handleOpenProductMessageModal}
+      />
+      {/* Tam ekran ürün mesajları modali */}
+      {isProductMessageModalOpen && selectedIndex !== null && orderItems[selectedIndex] && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+          <div className="w-screen h-screen flex items-center justify-center">
+            <ProductMessageModal
+              isOpen={true}
+              onClose={() => setIsProductMessageModalOpen(false)}
+              orderItems={orderItems}
+              selectedProductId={orderItems[selectedIndex].productId}
+              productMessages={productMessages}
+              messageGroups={productMessageGroups}
+              onAssignMessages={(productId, selectedMsgs) => {
+                setProductMessageSelections((prev) => ({
+                  ...prev,
+                  [productId]: Array.isArray(selectedMsgs) ? selectedMsgs : [],
+                }));
+                setIsProductMessageModalOpen(false);
+              }}
+              productMessageSelections={productMessageSelections}
+            />
           </div>
         </div>
-
-        {/* Payment Buttons */}
-        <div className="grid grid-cols-2 gap-1">
-          <button
-            onClick={() => handlePaymentClick('cash')}
-            className="flex items-center justify-center gap-1 bg-gradient-to-br from-yellow-500 to-yellow-600 text-white p-1.5 rounded hover:from-yellow-600 hover:to-yellow-700 transition-all duration-300"
-          >
-            <DollarSign size={14} />
-            <span className="font-medium text-xs">Nakit</span>
-          </button>
-          <button
-            onClick={() => handlePaymentClick('card')}
-            className="flex items-center justify-center gap-1 bg-gradient-to-br from-blue-500 to-blue-600 text-white p-1.5 rounded hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
-          >
-            <CreditCard size={14} />
-            <span className="font-medium text-xs">K.Kartı</span>
-          </button>
-          <button
-            onClick={() => handlePaymentClick('multinet')}
-            className="flex items-center justify-center gap-1 bg-gradient-to-br from-green-500 to-green-600 text-white p-1.5 rounded hover:from-green-600 hover:to-green-700 transition-all duration-300"
-          >
-            <Wallet size={14} />
-            <span className="font-medium text-xs">Multinet</span>
-          </button>
-          <button
-            onClick={() => handlePaymentClick('sodexo')}
-            className="flex items-center justify-center gap-1 bg-gradient-to-br from-purple-500 to-purple-600 text-white p-1.5 rounded hover:from-purple-600 hover:to-purple-700 transition-all duration-300"
-          >
-            <Wallet size={14} />
-            <span className="font-medium text-xs">Sodexo</span>
-          </button>
-        </div>
-      </div>
-
+      )}
+      {/* Ürün İndirim Modalı */}
+      {isProductDiscountModalOpen && selectedIndex !== null && orderItems[selectedIndex] && (
+        <ProductDiscountModal
+          isOpen={true}
+          onClose={() => setIsProductDiscountModalOpen(false)}
+          onApply={(discount) => {
+            const productId = orderItems[selectedIndex].productId;
+            setProductDiscounts((prev) => ({ ...prev, [productId]: discount }));
+            setIsProductDiscountModalOpen(false);
+          }}
+        />
+      )}
       {/* Payment Modal */}
       <PaymentModal
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
         onConfirm={handlePaymentComplete}
-        totalAmount={remainingAmount}
+        totalAmount={netTotal}
       />
+      {/* Yemek Çeki Modal */}
+      {isMealTicketModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 min-w-[400px] max-w-[98vw] border-4 border-yellow-400 flex flex-col items-center relative">
+            <div className="flex items-center gap-3 mb-6">
+              <RestaurantIcon className="text-yellow-500" fontSize="large" />
+              <span className="font-extrabold text-2xl md:text-3xl text-gray-800 tracking-wide drop-shadow">Yemek Çeki ile Öde</span>
+            </div>
+            <div className="grid grid-cols-2 gap-6 w-full mb-6">
+              {paymentButtons.filter(btn => ['multinet', 'ticket', 'sodexo', 'setcard'].includes(btn.key)).map(opt => (
+                <button
+                  key={opt.key}
+                  className={`flex flex-col items-center justify-center h-24 md:h-32 w-full px-2 py-4 rounded-2xl font-bold shadow-xl transition-all text-lg md:text-2xl ${opt.color} ${opt.text} hover:scale-105 focus:ring-4 focus:ring-yellow-400 border-2 border-yellow-200`}
+                  onClick={() => { handlePaymentClick(opt.key); handleMealTicketClose(); }}
+                  style={{ minHeight: 96 }}
+                >
+                  <span className="mb-2 text-4xl md:text-5xl drop-shadow">{opt.icon}</span>
+                  <span className="drop-shadow">{opt.label}</span>
+                </button>
+              ))}
+            </div>
+            <button className="mt-2 w-full px-4 py-3 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold shadow transition-all text-lg" onClick={handleMealTicketClose}>
+              Vazgeç
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

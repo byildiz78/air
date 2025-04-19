@@ -15,6 +15,7 @@ import CheckDiscountModal from '@/components/CheckDiscountModal';
 import ProductDiscountModal from '@/components/ProductDiscountModal';
 import CustomerNameModal from '@/components/CustomerNameModal';
 import ComboSelectionModal from '@/components/ComboSelectionModal';
+import FooterActions from '@/components/order/FooterActions';
 
 interface OrderPageProps {
   tableId: string;
@@ -123,7 +124,7 @@ const OrderPage: React.FC<OrderPageProps> = ({ tableId }) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900/70">
-      <Header tableId={tableId} />
+      <Header tableId={tableId} onBarcodeSubmit={handleBarcodeSubmit} />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Left Menu */}
@@ -157,58 +158,13 @@ const OrderPage: React.FC<OrderPageProps> = ({ tableId }) => {
           />
           
           {/* Footer */}
-          <div className="bg-gray-900/90 border-t border-gray-800">
-            {/* First Row */}
-            <div className="grid grid-cols-4 gap-1 p-1">
-              <button 
-                onClick={() => setIsCheckDiscountOpen(true)}
-                className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded"
-              >
-                <Percent size={18} />
-                <span>ÇEK İNDİRİMİ</span>
-              </button>
-              <button 
-                onClick={() => setIsProductDiscountOpen(true)}
-                className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded"
-              >
-                <Percent size={18} />
-                <span>ÜRÜN İNDİRİMİ</span>
-              </button>
-              <button 
-                onClick={() => setIsCustomerNameOpen(true)}
-                className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded"
-              >
-                <Users size={18} />
-                <span>MÜŞTERİ ADI</span>
-              </button>
-              <button className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded">
-                <Coins size={18} />
-                <span>PARA PUAN</span>
-              </button>
-            </div>
-            {/* Second Row */}
-            <div className="grid grid-cols-4 gap-1 p-1">
-              <button className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded">
-                <FileText size={18} />
-                <span>SİPARİŞ NOTU</span>
-              </button>
-              <button className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded">
-                <GitMerge size={18} />
-                <span>AYIR</span>
-              </button>
-              <button className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded">
-                <GitMerge size={18} className="rotate-180" />
-                <span>BİRLEŞTİR</span>
-              </button>
-              <button 
-                onClick={() => setIsOtherOptionsOpen(true)}
-                className="flex items-center justify-center gap-2 bg-blue-600/90 hover:bg-blue-700/90 text-white p-2 rounded"
-              >
-                <MoreHorizontal size={18} />
-                <span>DİĞER</span>
-              </button>
-            </div>
-          </div>
+          <FooterActions
+            onCheckDiscount={() => setIsCheckDiscountOpen(true)}
+            onProductDiscount={() => setIsProductDiscountOpen(true)}
+            onCustomerName={() => setIsCustomerNameOpen(true)}
+            onOtherOptions={() => setIsOtherOptionsOpen(true)}
+            hasProductInCart={orderItems.length > 0}
+          />
         </div>
 
         {/* Cart */}
@@ -231,6 +187,8 @@ const OrderPage: React.FC<OrderPageProps> = ({ tableId }) => {
             handlePayment(type);
           }}
           onBarcodeSubmit={handleBarcodeSubmit}
+          onCheckDiscount={() => setIsCheckDiscountOpen(true)}
+          style={{ maxWidth: '288px', minWidth: '234px', width: '28.8vw' }}
         />
 
         {/* Modals */}

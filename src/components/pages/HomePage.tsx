@@ -167,6 +167,12 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
+      <div className="flex flex-wrap gap-4 justify-center mt-6">
+        <a href="/zamankarti" className="inline-block px-6 py-4 rounded-lg bg-purple-600 text-white text-xl font-bold shadow hover:bg-purple-700 transition">
+          Zaman Kartı
+        </a>
+      </div>
+
       {/* Footer */}
       <Footer />
     </div>

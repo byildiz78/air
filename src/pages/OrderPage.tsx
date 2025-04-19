@@ -25,6 +25,8 @@ const OrderPage: React.FC<{ tableId?: string }> = ({ tableId }) => {
   const [customerName, setCustomerName] = useState('');
   const [isComboModalOpen, setIsComboModalOpen] = useState(false);
   const [selectedComboProduct, setSelectedComboProduct] = useState<Product | null>(null);
+  const [checkDiscount, setCheckDiscount] = useState(0);
+  const [productDiscount, setProductDiscount] = useState(0);
 
   const findProductByBarcode = (barcode: string): Product | null => {
     for (const category of categories) {
@@ -112,11 +114,13 @@ const OrderPage: React.FC<{ tableId?: string }> = ({ tableId }) => {
   };
 
   const handleCheckDiscount = (amount: number) => {
-    console.log('Applying check discount:', amount);
+    setCheckDiscount(amount);
+    setIsCheckDiscountOpen(false);
   };
 
   const handleProductDiscount = (percentage: number) => {
-    console.log('Applying product discount:', percentage);
+    setProductDiscount(percentage);
+    setIsProductDiscountOpen(false);
   };
 
   const handleCustomerName = (name: string) => {
@@ -172,6 +176,8 @@ const OrderPage: React.FC<{ tableId?: string }> = ({ tableId }) => {
           onCustomerName={() => setIsCustomerNameOpen(true)}
           onOtherOptions={() => setIsOtherOptionsOpen(true)}
           showTableActions={false}
+          selectedProductId={selectedProduct}
+          hasProductInCart={!!(selectedProduct && orderItems.some(item => item.productId === selectedProduct))}
         />
       </div>
 
@@ -180,13 +186,32 @@ const OrderPage: React.FC<{ tableId?: string }> = ({ tableId }) => {
         orderItems={orderItems}
         payments={payments}
         onIncrement={productId => {
-          const product = selectedCategory.products.find(p => p.id === productId);
+          // Fix: Search all categories for the product, not just selectedCategory
+          let product: Product | undefined;
+          for (const category of categories) {
+            const found = category.products.find(p => p.id === productId);
+            if (found) {
+              product = found;
+              break;
+            }
+          }
           if (product) addToOrder(product);
         }}
         onDecrement={removeFromOrder}
-        onPayment={handlePayment}
+        onPayment={(type, amount) => {
+          setPayments(prev => [
+            ...prev,
+            {
+              type: (type as any) as 'cash' | 'card' | 'multinet' | 'sodexo',
+              amount,
+              timestamp: new Date().toISOString(),
+            } as Payment
+          ]);
+        }}
         tableId={tableId || ''}
         onBarcodeSubmit={handleBarcodeSubmit}
+        checkDiscount={checkDiscount}
+        productDiscount={productDiscount}
       />
 
       {/* Modals */}

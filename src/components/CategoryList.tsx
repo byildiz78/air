@@ -12,46 +12,67 @@ const CategoryList: React.FC<CategoryListProps> = ({
   selectedCategory,
   onCategorySelect,
 }) => {
-  return (
-    <div className="p-2 flex-1 overflow-y-auto">
-      <div className="grid grid-cols-2 gap-1.5">
-        {categories.map(category => (
-          <button
-            key={category.id}
-            onClick={() => onCategorySelect(category)}
-            className={`
-              relative group h-16 rounded-lg transition-all duration-300 border
-              ${selectedCategory.id === category.id
-                ? 'bg-gradient-to-br from-blue-600/90 to-blue-700/90 border-blue-400 shadow-lg shadow-blue-500/20'
-                : 'bg-gradient-to-br from-gray-800/80 to-gray-700/80 border-gray-600/30 hover:border-gray-500/50'}
-            `}
-          >
-            {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
-              <div className="h-full w-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-from)_0%,_transparent_50%)]"></div>
-            </div>
+  // Kategoriye göre renk belirleyici
+  const getCategoryStyle = (category: Category, isSelected: boolean) => {
+    const name = category.name.toLowerCase();
+    if (name.includes('kahve') || name === 'coffee') {
+      return isSelected
+        ? 'bg-orange-100 text-orange-700 border-orange-400 shadow-orange-200'
+        : 'bg-orange-50 text-orange-800 border-orange-200 hover:bg-orange-100 hover:border-orange-300';
+    }
+    if (name.includes('içecek') || name.includes('icecek') || name === 'beverages') {
+      return isSelected
+        ? 'bg-teal-100 text-teal-700 border-teal-400 shadow-teal-200'
+        : 'bg-teal-50 text-teal-800 border-teal-200 hover:bg-teal-100 hover:border-teal-300';
+    }
+    if (name.includes('tatlı') || name.includes('tatli') || name === 'dessert') {
+      return isSelected
+        ? 'bg-pink-100 text-pink-700 border-pink-400 shadow-pink-200'
+        : 'bg-pink-50 text-pink-800 border-pink-200 hover:bg-pink-100 hover:border-pink-300';
+    }
+    if (name.includes('ana') || name.includes('main') || name === 'pizza') {
+      return isSelected
+        ? 'bg-red-100 text-red-700 border-red-400 shadow-red-200'
+        : 'bg-red-50 text-red-800 border-red-200 hover:bg-red-100 hover:border-red-300';
+    }
+    if (name.includes('salata') || name === 'salad') {
+      return isSelected
+        ? 'bg-green-100 text-green-700 border-green-400 shadow-green-200'
+        : 'bg-green-50 text-green-800 border-green-200 hover:bg-green-100 hover:border-green-300';
+    }
+    return isSelected
+      ? 'bg-indigo-100 text-indigo-700 border-indigo-400 shadow-indigo-200'
+      : 'bg-indigo-50 text-indigo-800 border-indigo-200 hover:bg-indigo-100 hover:border-indigo-300';
+  };
 
-            {/* Content */}
-            <div className="relative h-full flex flex-col items-center justify-center py-1">
-              <category.icon 
-                size={18} 
-                className={`mb-1 transition-all duration-300 ${
-                  selectedCategory.id === category.id 
-                    ? 'text-blue-200' 
-                    : 'text-gray-400 group-hover:text-gray-300'
-                }`}
-              />
-              <span className={`text-xs font-medium text-center px-1 transition-all duration-300 ${
-                selectedCategory.id === category.id
-                  ? 'text-white'
-                  : 'text-gray-300 group-hover:text-white'
-              }`}>
-                {category.name}
-              </span>
-            </div>
-          </button>
-        ))}
+  return (
+    <div className="h-full overflow-y-auto">
+      {/* Çok minimal ve satır içi kategori seçiniz ibaresi */}
+      <div className="flex items-center justify-center py-0.5">
+        <span className="flex items-center gap-1 text-gray-300 text-xs font-medium">
+          <span className="w-3 h-3 flex items-center justify-center"><span className="text-[11px]"></span></span>
+          
+        </span>
+      </div>
+      <div className="grid grid-cols-2 gap-2 p-2">
+        {categories.map(category => {
+          const isSelected = selectedCategory.id === category.id;
+          
+          return (
+            <button
+              key={category.id}
+              onClick={() => onCategorySelect(category)}
+              className={`
+                group relative h-20 min-h-[80px] rounded-xl border-2 font-bold text-base flex items-center justify-center transition-all duration-300
+                ${getCategoryStyle(category, isSelected)}
+                ${isSelected ? 'scale-[1.03] shadow-lg' : ''}
+              `}
+              style={{letterSpacing: '0.02em'}}
+            >
+              <span className={`w-full text-center break-words leading-tight ${isSelected ? 'font-extrabold' : ''}`}>{category.name}</span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

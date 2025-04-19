@@ -21,73 +21,45 @@ const OccupancyStats: React.FC<OccupancyStatsProps> = ({
     return total > 0 ? Math.round((occupied / total) * 100) : 0;
   };
 
-  const tableOccupancyRate = calculateOccupancyRate(sectionStats.occupiedTables, sectionStats.totalTables);
-  const restaurantOccupancyRate = calculateOccupancyRate(restaurantStats.occupiedTables, restaurantStats.totalTables);
-
-  // Determine status colors based on occupancy rates
-  const getStatusColor = (rate: number) => {
-    if (rate < 30) return 'text-green-400';
-    if (rate < 70) return 'text-yellow-400';
-    return 'text-red-400';
-  };
-
-  const getStatusBg = (rate: number) => {
-    if (rate < 30) return 'bg-green-400';
-    if (rate < 70) return 'bg-yellow-400';
-    return 'bg-red-400';
-  };
-
-  // Calculate average seating time (example data)
-  const averageSeatingTime = 45; // minutes
+  // Ortalama oturma süresi (örnek veri)
+  const averageSeatingTime = 45; // dakika
   const formatTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    return hours > 0 ? `${hours}s ${mins}d` : `${mins}d`;
+    return hours > 0 ? `${hours} sa ${mins} dk` : `${mins} dk`;
   };
 
   return (
     <div className="space-y-4">
       {/* Section Stats */}
-      <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-lg p-4 border border-blue-500/20">
-        <h3 className="text-sm font-medium text-gray-300 mb-3">Bölüm Doluluk</h3>
-        <div className="grid grid-cols-2 gap-4">
+      <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-md p-2 border border-blue-500/20">
+        <h3 className="text-xs font-medium text-gray-300 mb-1">Bölüm Doluluk</h3>
+        <div className="grid grid-cols-1 gap-2">
           <div>
-            <div className="text-2xl font-semibold text-white">
-              {tableOccupancyRate}%
-            </div>
-            <div className="text-sm text-gray-400">
-              {sectionStats.occupiedTables} / {sectionStats.totalTables} Masa
-            </div>
-          </div>
-          <div>
-            <div className="text-2xl font-semibold text-white">
+            <div className="text-lg font-semibold text-white">
               {calculateOccupancyRate(sectionStats.occupiedSeats, sectionStats.totalSeats)}%
             </div>
-            <div className="text-sm text-gray-400">
-              {sectionStats.occupiedSeats} / {sectionStats.totalSeats} Kişi
+            {/* Kişi sayısı gösterimi kaldırıldı */}
+            <div className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
+              <span className="font-semibold text-gray-300">Ø Oturma Süresi:</span>
+              <span>{formatTime(averageSeatingTime)}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Restaurant Stats */}
-      <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/10 rounded-lg p-4 border border-emerald-500/20">
-        <h3 className="text-sm font-medium text-gray-300 mb-3">Restoran Doluluk</h3>
-        <div className="grid grid-cols-2 gap-4">
+      <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/10 rounded-md p-2 border border-emerald-500/20">
+        <h3 className="text-xs font-medium text-gray-300 mb-1">Restoran Doluluk</h3>
+        <div className="grid grid-cols-1 gap-2">
           <div>
-            <div className="text-2xl font-semibold text-white">
-              {restaurantOccupancyRate}%
-            </div>
-            <div className="text-sm text-gray-400">
-              {restaurantStats.occupiedTables} / {restaurantStats.totalTables} Masa
-            </div>
-          </div>
-          <div>
-            <div className="text-2xl font-semibold text-white">
+            <div className="text-lg font-semibold text-white">
               {calculateOccupancyRate(restaurantStats.occupiedSeats, restaurantStats.totalSeats)}%
             </div>
-            <div className="text-sm text-gray-400">
-              {restaurantStats.occupiedSeats} / {restaurantStats.totalSeats} Kişi
+            {/* Kişi sayısı gösterimi kaldırıldı */}
+            <div className="text-[10px] text-gray-400 mt-0.5 flex items-center gap-1">
+              <span className="font-semibold text-gray-300">Ø Oturma Süresi:</span>
+              <span>{formatTime(averageSeatingTime)}</span>
             </div>
           </div>
         </div>
