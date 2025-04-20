@@ -134,6 +134,20 @@ const sectionConfigs = [
     icon: Warehouse,
     tableCount: 10,
     prefix: 'A'
+  },
+  {
+    id: 'terrace',
+    name: 'Teras',
+    icon: Warehouse,
+    tableCount: 10,
+    prefix: 'T'
+  },
+  {
+    id: 'roof',
+    name: 'Çatı Katı',
+    icon: Home,
+    tableCount: 5,
+    prefix: 'R'
   }
 ] as const;
 

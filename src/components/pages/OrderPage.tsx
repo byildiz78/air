@@ -229,6 +229,7 @@ const OrderPage: React.FC<OrderPageProps> = ({ tableId }) => {
             }}
             comboOptions={selectedComboProduct.comboOptions!}
             onComplete={handleComboComplete}
+            selectedComboProduct={selectedComboProduct}
           />
         )}
       </div>

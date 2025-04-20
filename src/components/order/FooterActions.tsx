@@ -6,6 +6,8 @@ interface FooterActionsProps {
   onProductDiscount: () => void;
   onCustomerName: () => void;
   onOtherOptions: () => void;
+  onSplitOrder?: () => void;
+  onOrderNote?: () => void;
   showTableActions?: boolean;
   selectedProductId?: string | null;
   hasProductInCart?: boolean;
@@ -16,6 +18,8 @@ const FooterActions: React.FC<FooterActionsProps> = ({
   onProductDiscount,
   onCustomerName,
   onOtherOptions,
+  onSplitOrder = () => {},
+  onOrderNote = () => {},
   showTableActions = true,
   selectedProductId = null,
   hasProductInCart = false,
@@ -57,13 +61,19 @@ const FooterActions: React.FC<FooterActionsProps> = ({
 
       {/* Second Row */}
       <div className="grid grid-cols-4 gap-1.5">
-        <button className={`${buttonClass} hover:bg-blue-800 active:bg-blue-700`}>
+        <button 
+          onClick={onOrderNote}
+          className={`${buttonClass} hover:bg-blue-800 active:bg-blue-700`}
+        >
           <FileText size={15} className={iconClass} />
           <span className="truncate">SİP.NOT</span>
         </button>
         {showTableActions ? (
           <>
-            <button className={`${buttonClass} hover:bg-purple-800 active:bg-purple-700`}>
+            <button 
+              onClick={onSplitOrder}
+              className={`${buttonClass} hover:bg-purple-800 active:bg-purple-700`}
+            >
               <GitMerge size={15} className={iconClass} />
               <span className="truncate">AYIR</span>
             </button>
@@ -76,16 +86,16 @@ const FooterActions: React.FC<FooterActionsProps> = ({
               className={`${buttonClass} hover:bg-gray-700 active:bg-gray-600`}
             >
               <MoreHorizontal size={15} className={iconClass} />
-              <span className="truncate">DİĞER</span>
+              <span className="truncate">Diğer</span>
             </button>
           </>
         ) : (
           <button 
             onClick={onOtherOptions}
-            className={`${buttonClass} col-span-3 hover:bg-gray-700 active:bg-gray-600`}
+            className={`${buttonClass} hover:bg-gray-700 active:bg-gray-600`}
           >
             <MoreHorizontal size={15} className={iconClass} />
-            <span className="truncate">DİĞER</span>
+            <span className="truncate">Diğer</span>
           </button>
         )}
       </div>

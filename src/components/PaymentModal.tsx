@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, DollarSign, Check, AlertCircle } from 'lucide-react';
 import ChangeDisplayOverlay from './ChangeDisplayOverlay';
+import { sendPaymentComplete } from '../utils/displayChannel';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -62,6 +63,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   const handlePaymentSuccess = (amount: number) => {
     if (amount > totalAmount) {
       setShowChange(true);
+      
+      // Send payment information to customer display
+      sendPaymentComplete({
+        paidAmount: amount,
+        changeAmount: amount - totalAmount,
+        paymentMethod: 'Nakit'
+      });
     } else {
       onConfirm(amount);
       onClose();

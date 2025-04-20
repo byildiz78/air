@@ -29,6 +29,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const plainBackgroundPages = ['/expenses', '/recall', '/delivery-customer'];
   const hideBackground = plainBackgroundPages.includes(pathname || '');
   const isOrderPage = pathname?.startsWith('/order');
+  const isDeliveryCustomerPage = pathname === '/delivery-customer';
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -40,8 +41,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <div className={`flex flex-col h-screen ${!hideBackground ? 'bg-[url(/images/bg.jpg)] bg-cover bg-center' : 'bg-gray-900'}`}>
-      {/* Header - Hidden in order pages */}
-      {!isOrderPage && (
+      {/* Header - Hidden in order pages and delivery-customer page */}
+      {!isOrderPage && !isDeliveryCustomerPage && (
         <header className="h-16 shrink-0 bg-gray-900/90 border-b border-gray-800 px-6 flex items-center justify-between">
           <div className="text-2xl font-bold text-white">robotPOS Air</div>
           <div className="flex items-center gap-4">
@@ -66,8 +67,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         {children}
       </main>
 
-      {/* Footer - Hidden in backoffice and order pages */}
-      {!isBackoffice && !isOrderPage && (
+      {/* Footer - Hidden in backoffice, order pages, and delivery-customer page */}
+      {!isBackoffice && !isOrderPage && !isDeliveryCustomerPage && (
         <footer className="h-12 shrink-0 bg-gray-900/90 border-t border-gray-800 px-3 flex items-center">
           <div className="flex justify-between items-center w-full">
             <div className="flex items-center gap-1 text-gray-400 text-xs">

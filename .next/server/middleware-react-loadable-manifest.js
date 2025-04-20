@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST='{"..\\\\app\\\\takeaway\\\\page.tsx -> ../../pages/TakeawayPage":{"id":42961,"files":["static/chunks/66ec4792-3764f626d96781a9.js","static/chunks/9512-80bb4e5ce4d33c15.js","static/chunks/5184-089494abc1c8ad9a.js","static/chunks/2961.67e15b416c48aa51.js"]}}';
+self.__REACT_LOADABLE_MANIFEST='{"..\\\\app\\\\takeaway\\\\page.tsx -> ../../pages/TakeawayPage":{"id":42961,"files":["static/chunks/66ec4792-3764f626d96781a9.js","static/chunks/5078-6c963c0d6e27cedb.js","static/chunks/5184-a59e22373f378017.js","static/chunks/2961.089a6c6694783d2d.js"]}}';

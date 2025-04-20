@@ -37,11 +37,13 @@ interface CartProps {
   tableId: string;
   checkDiscount?: number;
   productDiscount?: number;
+  customerName?: string;
   onIncrement: (productId: string) => void;
   onDecrement: (productId: string) => void;
   onPayment: (type: 'cash' | 'card' | 'multinet' | 'sodexo', amount: number) => void;
   onBarcodeSubmit: (barcode: string) => void;
   onCheckDiscount?: () => void;
+  orderNote?: string;
 }
 
 interface OrderItemWithMessages extends OrderItem {
@@ -79,11 +81,13 @@ const Cart: React.FC<CartProps & { style?: React.CSSProperties }> = ({
   tableId,
   checkDiscount = 0,
   productDiscount = 0,
+  customerName = '',
   onIncrement,
   onDecrement,
   onPayment,
   onBarcodeSubmit,
   onCheckDiscount,
+  orderNote,
   style
 }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -200,7 +204,7 @@ const Cart: React.FC<CartProps & { style?: React.CSSProperties }> = ({
 
   return (
     <div
-      className="bg-white flex flex-col h-full border-l border-gray-800 relative overflow-hidden"
+      className="bg-gray-50 flex flex-col h-full border-l border-gray-200 relative overflow-hidden"
       style={{height:'100vh', ...style}}
     >
       {/* Fişli/Faturalı Satış başlığı ve servis tipi */}
@@ -220,11 +224,27 @@ const Cart: React.FC<CartProps & { style?: React.CSSProperties }> = ({
       />
       {/* üst bilgi */}
       <CartInfoHeader
-        cekNo={cekNo}
-        terminalNo={terminalNo}
         tableId={tableId}
         acilisSaati={acilisSaati}
+        cekNo={cekNo}
+        terminalNo={terminalNo}
       />
+      
+      {/* Müşteri Adı */}
+      {customerName && (
+        <div className="bg-blue-100 border border-blue-200 p-1.5 mb-1 rounded-md flex items-start max-w-full">
+          <div className="bg-blue-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded mr-1.5 shrink-0">MÜŞTERİ</div>
+          <span className="text-blue-800 text-xs font-medium break-words overflow-hidden">{customerName}</span>
+        </div>
+      )}
+      
+      {/* Sipariş notu */}
+      {orderNote && (
+        <div className="bg-yellow-100 border border-yellow-200 p-1.5 mb-1 rounded-md flex items-start max-w-full">
+          <div className="bg-yellow-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded mr-1.5 shrink-0">NOT</div>
+          <span className="text-yellow-800 text-xs break-words overflow-hidden">{orderNote}</span>
+        </div>
+      )}
       {/* Cart Items & Watermark */}
       <CartItemList
         orderItems={orderItemsWithMessages}

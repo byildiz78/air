@@ -22,11 +22,11 @@ const CartActionBar: React.FC<CartActionBarProps> = ({
   disableIncrement,
   onCheckDiscount = () => {}, // Varsayılan fonksiyon
 }) => (
-  <div className="flex flex-row gap-1 py-1 bg-white border-t border-gray-200 px-1">
+  <div className="flex flex-row gap-1 py-1 bg-gray-50 border-t border-gray-200 px-1">
     {/* + ve - butonları birlikte bir kapsayıcıda, toplam genişlik flex-1 olacak şekilde */}
     <div className="flex flex-row flex-1 gap-1">
       <button
-        className={`flex-1 flex items-center justify-center px-0 py-1 font-bold shadow transition-all bg-green-100 hover:bg-green-200 text-green-700 text-xl h-10 ${disableIncrement ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`flex-1 flex items-center justify-center px-0 py-1 font-bold shadow transition-all bg-green-50 hover:bg-green-100 text-green-700 text-xl h-10 ${disableIncrement ? 'opacity-50 cursor-not-allowed' : ''}`}
         onClick={onIncrement}
         disabled={disableIncrement}
         style={{ minWidth: 0, minHeight: 36, borderRadius: 0 }}
@@ -38,7 +38,7 @@ const CartActionBar: React.FC<CartActionBarProps> = ({
         </span>
       </button>
       <button
-        className={`flex-1 flex items-center justify-center px-0 py-1 font-bold shadow transition-all bg-red-100 hover:bg-red-200 text-red-700 text-xl h-10 ${disableDecrement ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`flex-1 flex items-center justify-center px-0 py-1 font-bold shadow transition-all bg-red-50 hover:bg-red-100 text-red-700 text-xl h-10 ${disableDecrement ? 'opacity-50 cursor-not-allowed' : ''}`}
         onClick={onDecrement}
         disabled={disableDecrement}
         style={{ minWidth: 0, minHeight: 36, borderRadius: 0 }}
@@ -52,7 +52,7 @@ const CartActionBar: React.FC<CartActionBarProps> = ({
     </div>
     {/* Çek İndirimi Butonu */}
     <button
-      className="flex-1 flex items-center justify-center px-0 py-1 font-bold shadow transition-all bg-emerald-100 hover:bg-emerald-200 text-emerald-700 text-base h-10"
+      className="flex-1 flex items-center justify-center px-0 py-1 font-bold shadow transition-all bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-base h-10"
       onClick={onCheckDiscount}
       aria-label="Çek İndirimi"
       style={{ minWidth: 0, minHeight: 36, borderRadius: 0 }}
@@ -62,7 +62,7 @@ const CartActionBar: React.FC<CartActionBarProps> = ({
     </button>
     {/* İade butonu ödeme butonları ile aynı genişlik ve yükseklikte */}
     <button
-      className={`flex-1 flex items-center justify-center px-0 py-1 font-bold shadow transition-all h-10 ${refundMode ? 'bg-yellow-400 text-yellow-900' : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'} text-base`}
+      className={`flex-1 flex items-center justify-center px-0 py-1 font-bold shadow transition-all h-10 ${refundMode ? 'bg-yellow-300 text-yellow-900' : 'bg-yellow-50 text-yellow-700 hover:bg-yellow-100'} text-base`}
       onClick={() => setRefundMode(!refundMode)}
       aria-label="İade Modu"
       style={{ minWidth: 0, minHeight: 36, borderRadius: 0 }}

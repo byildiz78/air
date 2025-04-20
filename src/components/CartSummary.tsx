@@ -8,7 +8,7 @@ interface CartSummaryProps {
 }
 
 const CartSummary: React.FC<CartSummaryProps> = ({ checkDiscount, totalProductDiscount, netTotal }) => (
-  <div className="z-20 bg-gradient-to-r from-gray-50 to-gray-200 border-t border-gray-300 px-1.5 py-1.5 flex flex-col gap-0.5 shadow-inner rounded-b-xl select-none">
+  <div className="z-20 bg-gray-50 border-t border-gray-200 px-1.5 py-1.5 flex flex-col gap-0.5 shadow-inner rounded-b-xl select-none">
     {/* İndirimler sadece varsa göster */}
     {checkDiscount > 0 && (
       <div className="flex items-center justify-between text-[11px] text-rose-600 font-semibold">

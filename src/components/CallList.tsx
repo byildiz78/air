@@ -101,7 +101,7 @@ const CallList: React.FC = () => {
       <div className="glass-darker rounded-lg p-3 shadow-xl flex-[1.2] min-h-0">
         <div className="flex flex-col h-full">
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-bold text-white">TÜM ARAMALAR</h2>
+            <h2 className="text-lg font-bold text-gray-800">Tüm Aramalar</h2>
             <span className="px-1.5 py-0.5 bg-blue-500/20 rounded-lg text-blue-400 text-xs shrink-0 ml-2">
               {calls.length} arama
             </span>
@@ -141,7 +141,7 @@ const CallList: React.FC = () => {
       <div className="glass-darker rounded-lg p-3 shadow-xl flex-1 min-h-0">
         <div className="flex flex-col h-full">
           <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-bold text-white">Platform Bildirimleri</h2>
+            <h2 className="text-lg font-bold text-gray-800">Platform Bildirimleri</h2>
             <span className="px-1.5 py-0.5 bg-emerald-500/20 rounded-lg text-emerald-400 text-xs shrink-0 ml-2">
               {notifications.length} bildirim
             </span>

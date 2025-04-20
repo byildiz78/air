@@ -1,15 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ProductGrid from '../components/ProductGrid';
 import Cart from '../components/Cart';
 import FooterActions from '../components/order/FooterActions';
 import OrderModals from '../components/order/OrderModals';
 import ComboSelectionModal from '../components/ComboSelectionModal';
+import SplitOrderModal from '../components/order/SplitOrderModal';
+import OrderNoteModal from '../components/order/OrderNoteModal';
+import OpenCustomerDisplayButton from '../components/OpenCustomerDisplayButton';
 import { categories } from '../data/categories';
 import { Product, OrderItem, ComboItem, Payment } from '../types';
 import LeftMenu from '../components/order/LeftMenu';
+import { sendToDisplay } from '../utils/displayChannel';
 
 const OrderPage: React.FC<{ tableId?: string }> = ({ tableId }) => {
   const router = useRouter();
@@ -27,6 +31,11 @@ const OrderPage: React.FC<{ tableId?: string }> = ({ tableId }) => {
   const [selectedComboProduct, setSelectedComboProduct] = useState<Product | null>(null);
   const [checkDiscount, setCheckDiscount] = useState(0);
   const [productDiscount, setProductDiscount] = useState(0);
+  const [isSplitOrderModalOpen, setIsSplitOrderModalOpen] = useState(false);
+  const [splitOrderItems, setSplitOrderItems] = useState<OrderItem[][]>([]);
+  const [isOrderNoteModalOpen, setIsOrderNoteModalOpen] = useState(false);
+  const [orderNote, setOrderNote] = useState('');
+  const [isCustomerDisplayOpen, setIsCustomerDisplayOpen] = useState(false);
 
   const findProductByBarcode = (barcode: string): Product | null => {
     for (const category of categories) {
@@ -127,28 +136,82 @@ const OrderPage: React.FC<{ tableId?: string }> = ({ tableId }) => {
     setCustomerName(name);
   };
 
-  const handleComboComplete = (selections: { mainItem: ComboItem; side: ComboItem; drink: ComboItem }) => {
+  const handleComboComplete = (selections: { mainItem: ComboItem | null; side: ComboItem | null; drink: ComboItem | null; quantity: number }) => {
     if (!selectedComboProduct) return;
     
+    // Opsiyonel seçimler için güvenli erişim
     const extraCost = (
-      (selections.mainItem.extraPrice || 0) +
-      (selections.side.extraPrice || 0) +
-      (selections.drink.extraPrice || 0)
+      (selections.mainItem?.extraPrice || 0) +
+      (selections.side?.extraPrice || 0) +
+      (selections.drink?.extraPrice || 0)
     );
 
-    const comboName = `${selectedComboProduct.name} (${selections.mainItem.name})`;
+    // Ana ürün adını oluştur - eğer ana ürün seçilmişse onun adını kullan
+    const mainItemName = selections.mainItem ? ` (${selections.mainItem.name})` : '';
+    const comboName = `${selectedComboProduct.name}${mainItemName}`;
+    
+    // Seçimleri temizle - null değerleri filtrele
+    const cleanSelections = {
+      mainItem: selections.mainItem,
+      side: selections.side,
+      drink: selections.drink,
+      quantity: selections.quantity
+    };
 
     setOrderItems(prev => [...prev, {
       productId: selectedComboProduct.id,
       name: comboName,
       price: selectedComboProduct.price + extraCost,
-      quantity: 1,
-      comboSelections: selections
+      quantity: selections.quantity,
+      comboSelections: cleanSelections
     }]);
 
     setSelectedComboProduct(null);
     setIsComboModalOpen(false);
   };
+
+  const handleSplitOrder = (splitItems: OrderItem[][]) => {
+    setSplitOrderItems(splitItems);
+    setIsSplitOrderModalOpen(false);
+  };
+
+  const handleIncrement = (productId: string) => {
+    let product: Product | undefined;
+    for (const category of categories) {
+      const found = category.products.find(p => p.id === productId);
+      if (found) {
+        product = found;
+        break;
+      }
+    }
+    if (product) addToOrder(product);
+  };
+
+  const handleDecrement = (productId: string) => {
+    removeFromOrder(productId);
+  };
+
+  useEffect(() => {
+    if (isCustomerDisplayOpen) {
+      if (orderItems.length > 0) {
+        // Sipariş varsa, sipariş bilgilerini gönder
+        sendToDisplay({
+          type: 'ORDER_UPDATE',
+          orderItems,
+          customerName,
+          orderNote,
+          checkDiscount,
+          productDiscount,
+          total: orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0) - checkDiscount - productDiscount
+        });
+      } else {
+        // Sipariş yoksa, karşılama ekranını göster
+        sendToDisplay({
+          type: 'SHOW_WELCOME'
+        });
+      }
+    }
+  }, [orderItems, customerName, orderNote, checkDiscount, productDiscount, isCustomerDisplayOpen]);
 
   return (
     <div className="flex h-screen">
@@ -163,19 +226,31 @@ const OrderPage: React.FC<{ tableId?: string }> = ({ tableId }) => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-0">
-        <ProductGrid
-          products={selectedCategory.products}
-          selectedProduct={selectedProduct}
-          orderItems={orderItems}
-          onProductSelect={addToOrder}
-        />
+        <div className="flex-1 overflow-hidden">
+          <div className="flex justify-between items-center p-2 bg-gray-800">
+            <h2 className="text-white text-lg font-medium">Ürünler</h2>
+            <OpenCustomerDisplayButton 
+              isDisplayOpen={isCustomerDisplayOpen}
+              setIsDisplayOpen={setIsCustomerDisplayOpen}
+            />
+          </div>
+          <ProductGrid
+            products={selectedCategory.products}
+            selectedProduct={selectedProduct}
+            orderItems={orderItems}
+            onProductSelect={addToOrder}
+            onBarcodeSubmit={handleBarcodeSubmit}
+          />
+        </div>
         
         <FooterActions
           onCheckDiscount={() => setIsCheckDiscountOpen(true)}
           onProductDiscount={() => setIsProductDiscountOpen(true)}
           onCustomerName={() => setIsCustomerNameOpen(true)}
           onOtherOptions={() => setIsOtherOptionsOpen(true)}
-          showTableActions={false}
+          onSplitOrder={() => setIsSplitOrderModalOpen(true)}
+          onOrderNote={() => setIsOrderNoteModalOpen(true)}
+          showTableActions={true}
           selectedProductId={selectedProduct}
           hasProductInCart={!!(selectedProduct && orderItems.some(item => item.productId === selectedProduct))}
         />
@@ -184,34 +259,17 @@ const OrderPage: React.FC<{ tableId?: string }> = ({ tableId }) => {
       {/* Cart */}
       <Cart
         orderItems={orderItems}
-        payments={payments}
-        onIncrement={productId => {
-          // Fix: Search all categories for the product, not just selectedCategory
-          let product: Product | undefined;
-          for (const category of categories) {
-            const found = category.products.find(p => p.id === productId);
-            if (found) {
-              product = found;
-              break;
-            }
-          }
-          if (product) addToOrder(product);
-        }}
-        onDecrement={removeFromOrder}
-        onPayment={(type, amount) => {
-          setPayments(prev => [
-            ...prev,
-            {
-              type: (type as any) as 'cash' | 'card' | 'multinet' | 'sodexo',
-              amount,
-              timestamp: new Date().toISOString(),
-            } as Payment
-          ]);
-        }}
+        payments={payments || []}
         tableId={tableId || ''}
+        onIncrement={handleIncrement}
+        onDecrement={handleDecrement}
+        onPayment={() => {}}
         onBarcodeSubmit={handleBarcodeSubmit}
+        customerName={customerName}
         checkDiscount={checkDiscount}
         productDiscount={productDiscount}
+        onCheckDiscount={() => setIsCheckDiscountOpen(true)}
+        orderNote={orderNote}
       />
 
       {/* Modals */}
@@ -234,13 +292,32 @@ const OrderPage: React.FC<{ tableId?: string }> = ({ tableId }) => {
         <ComboSelectionModal
           isOpen={isComboModalOpen}
           onClose={() => {
-            setIsComboModalOpen(false);
             setSelectedComboProduct(null);
+            setIsComboModalOpen(false);
           }}
-          comboOptions={selectedComboProduct.comboOptions!}
+          comboOptions={selectedComboProduct?.comboOptions!}
           onComplete={handleComboComplete}
+          selectedComboProduct={selectedComboProduct}
         />
       )}
+
+      {/* Split Order Modal */}
+      {isSplitOrderModalOpen && (
+        <SplitOrderModal
+          isOpen={isSplitOrderModalOpen}
+          onClose={() => setIsSplitOrderModalOpen(false)}
+          orderItems={orderItems}
+          onSplitComplete={handleSplitOrder}
+        />
+      )}
+
+      {/* Order Note Modal */}
+      <OrderNoteModal
+        isOpen={isOrderNoteModalOpen}
+        onClose={() => setIsOrderNoteModalOpen(false)}
+        initialNote={orderNote}
+        onSave={(note) => setOrderNote(note)}
+      />
     </div>
   );
 };

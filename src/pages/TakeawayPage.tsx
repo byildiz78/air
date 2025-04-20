@@ -200,6 +200,7 @@ const TakeawayPage: React.FC = () => {
             }}
             comboOptions={selectedComboProduct.comboOptions!}
             onComplete={handleComboComplete}
+            selectedComboProduct={selectedComboProduct}
           />
         )}
       </div>

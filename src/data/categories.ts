@@ -44,7 +44,7 @@ export const categories: Category[] = [
         isCombo: true,
         comboOptions: {
           mainItems: [
-            { id: 'classic-burger', name: 'Klasik Burger' },
+            { id: 'classic-burger', name: 'Klasik Burger', isRequired: true },
             { id: 'cheese-burger', name: 'Cheese Burger', extraPrice: 10 },
             { id: 'double-burger', name: 'Double Burger', extraPrice: 25 }
           ],
@@ -58,7 +58,10 @@ export const categories: Category[] = [
             { id: 'fanta', name: 'Fanta' },
             { id: 'sprite', name: 'Sprite' },
             { id: 'ayran', name: 'Ayran' }
-          ]
+          ],
+          mainItemsSelectionType: 'required',
+          sidesSelectionType: 'required',
+          drinksSelectionType: 'required'
         }
       },
       {
@@ -72,19 +75,22 @@ export const categories: Category[] = [
           mainItems: [
             { id: 'grilled-chicken', name: 'Izgara Tavuk' },
             { id: 'crispy-chicken', name: 'Çıtır Tavuk', extraPrice: 10 },
-            { id: 'spicy-chicken', name: 'Acılı Tavuk', extraPrice: 10 }
+            { id: 'spicy-chicken', name: 'Acılı Tavuk', extraPrice: 10, isOptional: true }
           ],
           sides: [
             { id: 'regular-fries', name: 'Patates Kızartması' },
             { id: 'rice', name: 'Pilav', extraPrice: 5 },
-            { id: 'salad', name: 'Salata', extraPrice: 8 }
+            { id: 'salad', name: 'Salata', extraPrice: 8, isOptional: true }
           ],
           drinks: [
             { id: 'cola', name: 'Kola' },
             { id: 'fanta', name: 'Fanta' },
             { id: 'sprite', name: 'Sprite' },
             { id: 'ayran', name: 'Ayran' }
-          ]
+          ],
+          mainItemsSelectionType: 'required',
+          sidesSelectionType: 'required',
+          drinksSelectionType: 'optional'
         }
       }
     ]

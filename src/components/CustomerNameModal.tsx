@@ -32,49 +32,77 @@ const CustomerNameModal: React.FC<CustomerNameModalProps> = ({ isOpen, onClose, 
     }
   };
 
+  const handleClear = () => {
+    setName('');
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-      <div className="bg-gray-900 rounded-xl w-[800px] shadow-2xl">
-        <div className="p-6 border-b border-gray-700 flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-white">Müşteri Adı</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white p-2">
-            <X size={24} />
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 overflow-hidden">
+      <div className="bg-white w-full h-full flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-2 border-b border-gray-200 bg-blue-50">
+          <div className="flex items-center">
+            <User size={20} className="text-blue-600 mr-2" />
+            <h2 className="text-lg font-bold text-gray-800">Müşteri Adı</h2>
+          </div>
+          <button 
+            onClick={onClose}
+            className="p-1 rounded-full hover:bg-gray-200 text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            <X size={20} />
           </button>
         </div>
-        
-        <div className="p-6">
-          <div className="mb-6">
+
+        {/* Content */}
+        <div className="p-2 bg-gray-50 flex-1 overflow-auto">
+          <div className="bg-white p-3 rounded-lg shadow-sm border border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <label htmlFor="customerName" className="text-sm font-medium text-gray-700">
+                Müşteri Adı
+              </label>
+              {name && (
+                <button 
+                  onClick={handleClear}
+                  className="text-xs text-gray-500 hover:text-red-500 px-1.5 py-0.5 rounded border border-gray-300 hover:border-red-300"
+                >
+                  Temizle
+                </button>
+              )}
+            </div>
             <div className="relative">
               <input
+                id="customerName"
                 type="text"
                 value={name}
                 readOnly
-                className="w-full bg-gray-800 text-white text-2xl border border-gray-700 rounded-lg p-4 pl-12"
+                className="w-full bg-white text-gray-800 text-base border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Müşteri adını giriniz"
               />
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                <User size={24} />
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <User size={18} />
               </div>
             </div>
           </div>
+        </div>
 
-          <TouchKeyboard onInput={handleKeyboardInput} />
-          
-          <div className="flex gap-4 mt-6">
+        {/* Keyboard */}
+        <div className="p-2 border-t border-gray-200 bg-gray-100">
+          <div className="flex justify-between items-center mb-2">
             <button
               onClick={onClose}
-              className="flex-1 bg-gray-700 text-white p-4 rounded-lg text-lg hover:bg-gray-600 transition-colors"
+              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-200 font-medium text-sm"
             >
               İptal
             </button>
             <button
               onClick={handleSubmit}
               disabled={!name.trim()}
-              className="flex-1 bg-blue-600 text-white p-4 rounded-lg text-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Kaydet
             </button>
           </div>
+          <TouchKeyboard onInput={handleKeyboardInput} />
         </div>
       </div>
     </div>

@@ -64,3 +64,24 @@ body {
 .hover\:scale-102:hover {
   transform: scale(1.02);
 }
+
+/* Müşteri Ekranı Animasyonları */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes progress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.animate-progress {
+  animation: progress 8s linear;
+  height: 4px;
+  width: 0%;
+}

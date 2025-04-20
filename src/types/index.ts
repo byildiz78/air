@@ -47,12 +47,18 @@ export interface ComboOptions {
   mainItems: ComboItem[];
   sides: ComboItem[];
   drinks: ComboItem[];
+  mainItemsSelectionType?: 'required' | 'optional' | 'multiple';
+  sidesSelectionType?: 'required' | 'optional' | 'multiple';
+  drinksSelectionType?: 'required' | 'optional' | 'multiple';
 }
 
 export interface ComboItem {
   id: string;
   name: string;
   extraPrice?: number;
+  isRequired?: boolean;
+  isOptional?: boolean;
+  maxSelections?: number;
 }
 
 export interface Category {
@@ -72,9 +78,10 @@ export interface OrderItem {
   addedBy?: string;
   discount?: number;
   comboSelections?: {
-    mainItem: ComboItem;
-    side: ComboItem;
-    drink: ComboItem;
+    mainItem: ComboItem | null;
+    side: ComboItem | null;
+    drink: ComboItem | null;
+    quantity?: number;
   };
 }
 
