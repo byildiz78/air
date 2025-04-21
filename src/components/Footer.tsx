@@ -1,32 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { User, Terminal, Code, Settings } from 'lucide-react';
+import React from 'react';
+import { User, Terminal, Code, Settings, Clock, MonitorPlay } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const Footer: React.FC = () => {
-  const [isBackoffice, setIsBackoffice] = useState(false);
+  const pathname = usePathname();
   
-  useEffect(() => {
-    // Check if we're in the backoffice layout
-    const backofficeLayout = document.getElementById('backoffice-layout');
-    setIsBackoffice(!!backofficeLayout);
-    
-    // Set up a mutation observer to detect if the backoffice layout is added later
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.type === 'childList') {
-          const backofficeLayout = document.getElementById('backoffice-layout');
-          setIsBackoffice(!!backofficeLayout);
-        }
-      }
-    });
-    
-    observer.observe(document.body, { childList: true, subtree: true });
-    
-    return () => observer.disconnect();
-  }, []);
+  // Check if we're in backoffice or kitchen display based on the URL path
+  const isBackoffice = pathname?.startsWith('/backoffice');
+  const isKitchenDisplay = pathname?.startsWith('/kitchen-display');
   
-  // Don't render the footer in backoffice
-  if (isBackoffice) {
+  // Don't render the footer in backoffice or kitchen display
+  if (isBackoffice || isKitchenDisplay) {
     return null;
   }
 
@@ -45,6 +30,20 @@ const Footer: React.FC = () => {
           >
             <Settings size={14} />
             <span className="text-xs">Arka Ofis</span>
+          </Link>
+          <Link 
+            href="/zamankarti"
+            className="flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors"
+          >
+            <Clock size={14} />
+            <span className="text-xs">Zaman Kartı</span>
+          </Link>
+          <Link 
+            href="/kitchen-display"
+            className="flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors"
+          >
+            <MonitorPlay size={14} />
+            <span className="text-xs">KDS</span>
           </Link>
         </div>
 

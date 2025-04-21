@@ -83,6 +83,9 @@ export interface OrderItem {
     drink: ComboItem | null;
     quantity?: number;
   };
+  status?: 'pending' | 'in-progress' | 'completed';
+  notes?: string;
+  options?: string[];
 }
 
 export interface CartDiscount {
@@ -95,4 +98,31 @@ export interface Payment {
   type: 'cash' | 'card' | 'multinet' | 'sodexo';
   amount: number;
   timestamp: string;
+}
+
+// Kitchen Display System Types
+export interface Order {
+  id: string;
+  orderNumber: string;
+  tableId: string;
+  customerName?: string;
+  deliveryAddress?: string;
+  status: 'pending' | 'in-progress' | 'ready' | 'completed' | 'cancelled';
+  type: 'dine-in' | 'takeaway' | 'delivery';
+  items: OrderItem[];
+  createdAt: string;
+  lastUpdated: string;
+  notes?: string;
+  priority: number;
+  waiter?: string;
+}
+
+export interface KitchenDisplaySettings {
+  showCompletedOrders: boolean;
+  autoRefreshInterval: number; // in seconds
+  sortBy: 'time' | 'priority' | 'table';
+  groupBy: 'status' | 'type' | 'none';
+  viewMode: 'grid' | 'list';
+  alertThreshold: number; // minutes before order is marked as delayed
+  criticalThreshold: number; // minutes before order is marked as critical
 }

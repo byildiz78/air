@@ -1,6 +1,7 @@
 import React from 'react';
 import { Clock } from 'lucide-react';
 import BarcodeInput from './BarcodeInput';
+import { usePathname } from 'next/navigation';
 
 interface HeaderProps {
   tableId?: string;
@@ -9,6 +10,16 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ tableId, title = 'RobotPOS', onBarcodeSubmit }) => {
+  const pathname = usePathname();
+  
+  // Check if we're in kitchen display based on the URL path
+  const isKitchenDisplay = pathname?.startsWith('/kitchen-display');
+  
+  // Don't render the header in kitchen display
+  if (isKitchenDisplay) {
+    return null;
+  }
+
   return (
     <div className="bg-gray-900/90 border-b border-gray-800 p-4">
       <div className="container mx-auto flex justify-between items-center text-white">

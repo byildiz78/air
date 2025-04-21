@@ -12,7 +12,15 @@ const OpenCustomerDisplayButton: React.FC<OpenCustomerDisplayButtonProps> = ({
 }) => {
   const openCustomerDisplay = () => {
     if (!isDisplayOpen) {
-      const displayWindow = window.open('/customer-display', 'customerDisplay', 'width=1024,height=768');
+      // Get the secondary monitor if available
+      const secondaryScreen = window.screen.availWidth;
+      
+      // Window features for positioning on a secondary display
+      // This positions the window at the right edge of the primary screen
+      // which is typically where a secondary monitor would begin
+      const windowFeatures = `width=1024,height=768,left=${secondaryScreen},top=0`;
+      
+      const displayWindow = window.open('/customer-display', 'customerDisplay', windowFeatures);
       if (displayWindow) {
         setIsDisplayOpen(true);
         
