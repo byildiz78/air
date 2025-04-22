@@ -55,44 +55,53 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
   const handlePrintBill = () => {
     if (isPrinting) return;
     
+    // Dokunuş geri bildirimini iyileştirmek için hemen görsel değişiklik
     setIsPrinting(true);
     
-    // First phase - printing
+    // Küçük bir gecikme ile işlemi başlat
     setTimeout(() => {
-      setPrintingComplete(true);
-      
-      // Second phase - show success and redirect
+      // First phase - printing
       setTimeout(() => {
-        setIsPrinting(false);
-        setPrintingComplete(false);
-        // Navigate back to table selection
-        router.push('/mobileorder');
+        setPrintingComplete(true);
+        
+        // Second phase - show success and redirect
+        setTimeout(() => {
+          setIsPrinting(false);
+          setPrintingComplete(false);
+          // Navigate back to table selection
+          router.push('/mobileorder');
+        }, 1000);
       }, 1000);
-    }, 1500);
+    }, 50);
   };
 
   const handleSendToKitchen = () => {
     if (isSending) return;
     
+    // Dokunuş geri bildirimini iyileştirmek için hemen görsel değişiklik
     setIsSending(true);
     
-    // Call the onSendToKitchen function if provided
-    if (onSendToKitchen) {
-      onSendToKitchen();
-    }
-    
-    // First phase - sending
+    // Küçük bir gecikme ile onSendToKitchen fonksiyonunu çağır
+    // Bu, kullanıcıya dokunuşun algılandığını gösterir
     setTimeout(() => {
-      setSendingComplete(true);
+      // Call the onSendToKitchen function if provided
+      if (onSendToKitchen) {
+        onSendToKitchen();
+      }
       
-      // Second phase - show success and redirect
+      // First phase - sending
       setTimeout(() => {
-        setIsSending(false);
-        setSendingComplete(false);
-        // Navigate back to table selection
-        router.push('/mobileorder');
+        setSendingComplete(true);
+        
+        // Second phase - show success and redirect
+        setTimeout(() => {
+          setIsSending(false);
+          setSendingComplete(false);
+          // Navigate back to table selection
+          router.push('/mobileorder');
+        }, 1000);
       }, 1000);
-    }, 1500);
+    }, 50);
   };
 
   return (
@@ -107,27 +116,33 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
         {/* Action Buttons */}
         <div className="grid grid-cols-5 divide-x divide-gray-200">
           <motion.button
-            className={`flex flex-col items-center justify-center py-3 ${showCart ? 'bg-blue-50 text-blue-600' : 'text-gray-600'}`}
-            onClick={showCart ? onToggleCart : undefined}
+            className={`flex flex-col items-center justify-center py-3 px-1 ${showCart ? 'bg-blue-50 text-blue-600' : 'text-gray-600'}`}
+            onClick={onToggleCart}
             whileTap={{ scale: 0.95 }}
+            style={{ touchAction: "manipulation" }}
+            aria-label="Ürünler"
           >
             <Grid size={20} />
             <span className="text-xs mt-1 font-medium">Ürünler</span>
           </motion.button>
           
           <motion.button
-            className="flex flex-col items-center justify-center py-3 text-gray-600"
+            className="flex flex-col items-center justify-center py-3 px-1 text-gray-600"
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsTableOperationsOpen(true)}
+            style={{ touchAction: "manipulation" }}
+            aria-label="İşlemler"
           >
             <Receipt size={20} />
             <span className="text-xs mt-1 font-medium">İşlemler</span>
           </motion.button>
           
           <motion.button
-            className={`flex flex-col items-center justify-center py-3 relative ${!showCart ? 'bg-blue-50 text-blue-600' : 'text-gray-600'}`}
+            className={`flex flex-col items-center justify-center py-3 px-1 relative ${!showCart ? 'bg-blue-50 text-blue-600' : 'text-gray-600'}`}
             onClick={onToggleCart}
             whileTap={{ scale: 0.95 }}
+            style={{ touchAction: "manipulation" }}
+            aria-label="Sepet"
           >
             <ShoppingCart size={20} />
             <span className="text-xs mt-1 font-medium">Sepet</span>
@@ -144,10 +159,12 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
           </motion.button>
           
           <motion.button
-            className="flex flex-col items-center justify-center py-3 text-gray-600 relative overflow-hidden"
+            className="flex flex-col items-center justify-center py-3 px-1 text-gray-600 relative overflow-hidden"
             whileTap={{ scale: 0.95 }}
             onClick={handlePrintBill}
             disabled={isPrinting}
+            style={{ touchAction: "manipulation" }}
+            aria-label="Hesap"
           >
             <AnimatePresence mode="wait">
               {printingComplete ? (
@@ -200,10 +217,12 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
           </motion.button>
           
           <motion.button
-            className="flex flex-col items-center justify-center py-3 text-green-600 relative overflow-hidden"
+            className="flex flex-col items-center justify-center py-3 px-1 text-green-600 relative overflow-hidden"
             whileTap={{ scale: 0.95 }}
             onClick={handleSendToKitchen}
             disabled={isSending}
+            style={{ touchAction: "manipulation" }}
+            aria-label="Mutfağa"
           >
             <AnimatePresence mode="wait">
               {sendingComplete ? (
