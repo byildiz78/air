@@ -1,7 +1,7 @@
 {
-  "/table-layout/page": "app/table-layout/page.js",
   "/page": "app/page.js",
+  "/table-layout/page": "app/table-layout/page.js",
   "/mobileorder/page": "app/mobileorder/page.js",
-  "/mobileorder/[tableId]/page": "app/mobileorder/[tableId]/page.js",
-  "/kitchen-display/page": "app/kitchen-display/page.js"
+  "/kitchen-display/page": "app/kitchen-display/page.js",
+  "/mobileorder/[tableId]/page": "app/mobileorder/[tableId]/page.js"
 }

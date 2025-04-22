@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Grid, Printer, Receipt, Send, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -27,6 +27,22 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
   const [isSending, setIsSending] = useState(false);
   const [printingComplete, setPrintingComplete] = useState(false);
   const [sendingComplete, setSendingComplete] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Sayfa yüklendiğinde bir kerelik çalışacak efekt
+  useEffect(() => {
+    // Sayfa tamamen yüklendiğinde isInitialized'ı true yap
+    const timer = setTimeout(() => {
+      setIsInitialized(true);
+    }, 300);
+
+    // iOS'ta dokunma olaylarının daha iyi çalışması için
+    document.addEventListener('touchstart', function() {}, {passive: true});
+    
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
   const handleChangeTable = () => {
     setIsTableOperationsOpen(false);
@@ -121,6 +137,7 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
             whileTap={{ scale: 0.95 }}
             style={{ touchAction: "manipulation" }}
             aria-label="Ürünler"
+            onTouchStart={() => {}}
           >
             <Grid size={20} />
             <span className="text-xs mt-1 font-medium">Ürünler</span>
@@ -132,6 +149,7 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
             onClick={() => setIsTableOperationsOpen(true)}
             style={{ touchAction: "manipulation" }}
             aria-label="İşlemler"
+            onTouchStart={() => {}}
           >
             <Receipt size={20} />
             <span className="text-xs mt-1 font-medium">İşlemler</span>
@@ -143,6 +161,7 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
             whileTap={{ scale: 0.95 }}
             style={{ touchAction: "manipulation" }}
             aria-label="Sepet"
+            onTouchStart={() => {}}
           >
             <ShoppingCart size={20} />
             <span className="text-xs mt-1 font-medium">Sepet</span>
@@ -165,6 +184,7 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
             disabled={isPrinting}
             style={{ touchAction: "manipulation" }}
             aria-label="Hesap"
+            onTouchStart={() => {}}
           >
             <AnimatePresence mode="wait">
               {printingComplete ? (
@@ -223,6 +243,7 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
             disabled={isSending}
             style={{ touchAction: "manipulation" }}
             aria-label="Mutfağa"
+            onTouchStart={() => {}}
           >
             <AnimatePresence mode="wait">
               {sendingComplete ? (
