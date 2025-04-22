@@ -9,6 +9,7 @@ import LeftMenu from '../components/order/LeftMenu';
 import FooterActions from '../components/order/FooterActions';
 import OrderModals from '../components/order/OrderModals';
 import ComboSelectionModal from '../components/ComboSelectionModal';
+import { PaymentType } from '../components/SettlementModal';
 
 const TakeawayPage: React.FC = () => {
   const router = useRouter();
@@ -82,7 +83,7 @@ const TakeawayPage: React.FC = () => {
     });
   };
 
-  const handlePayment = (type: 'cash' | 'card' | 'multinet' | 'sodexo', amount: number) => {
+  const handlePayment = (type: PaymentType, amount: number) => {
     const newPayment: Payment = {
       type,
       amount,

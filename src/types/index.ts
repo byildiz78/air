@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import { PaymentType } from '../components/SettlementModal';
 
 export type TableStatus = 'empty' | 'occupied';
 export type TableShape = 'round' | 'rectangle' | 'square' | 'oval';
@@ -95,7 +96,7 @@ export interface CartDiscount {
 }
 
 export interface Payment {
-  type: 'cash' | 'card' | 'multinet' | 'sodexo';
+  type: PaymentType;
   amount: number;
   timestamp: string;
 }

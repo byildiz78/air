@@ -11,6 +11,7 @@ import CartItemList from './CartItemList';
 import CartSummary from './CartSummary';
 import CartActionBar from './CartActionBar';
 import CartPaymentButtons from './CartPaymentButtons';
+import SettlementModal, { PaymentType } from './SettlementModal';
 import { productMessages, productMessageGroups } from '../data/productMessages';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -40,7 +41,7 @@ interface CartProps {
   customerName?: string;
   onIncrement: (productId: string) => void;
   onDecrement: (productId: string) => void;
-  onPayment: (type: 'cash' | 'card' | 'multinet' | 'sodexo', amount: number) => void;
+  onPayment: (type: PaymentType, amount: number) => void;
   onBarcodeSubmit: (barcode: string) => void;
   onCheckDiscount?: () => void;
   orderNote?: string;
@@ -98,6 +99,7 @@ const Cart: React.FC<CartProps & { style?: React.CSSProperties }> = ({
   const [isProductMessageModalOpen, setIsProductMessageModalOpen] = useState(false);
   const [isProductDiscountModalOpen, setIsProductDiscountModalOpen] = useState(false);
   const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
+  const [isSettlementModalOpen, setIsSettlementModalOpen] = useState(false);
   const [productMessageSelections, setProductMessageSelections] = useState<{ [productId: string]: string[] }>({});
   const [productDiscounts, setProductDiscounts] = useState<{ [productId: string]: number }>({});
   const cartItemsRef = useRef<HTMLDivElement>(null);
@@ -142,13 +144,17 @@ const Cart: React.FC<CartProps & { style?: React.CSSProperties }> = ({
   const handleSelect = (idx: number) => setSelectedIndex(idx);
   const handleExpand = (idx: number) => setExpandedIndex(expandedIndex === idx ? null : idx);
   const handlePaymentClick = (type: string) => {
-    setSelectedPaymentType(type);
-    setIsPaymentModalOpen(true);
+    if (type === 'cek_kapat') {
+      setIsSettlementModalOpen(true);
+    } else {
+      setSelectedPaymentType(type);
+      setIsPaymentModalOpen(true);
+    }
   };
   const handlePaymentComplete = (amount: number) => {
     setIsPaymentModalOpen(false);
-    if (selectedPaymentType && ['cash','card','multinet','sodexo'].includes(selectedPaymentType)) {
-      onPayment(selectedPaymentType as 'cash' | 'card' | 'multinet' | 'sodexo', amount);
+    if (selectedPaymentType) {
+      onPayment(selectedPaymentType as PaymentType, amount);
     }
   };
 
@@ -321,6 +327,20 @@ const Cart: React.FC<CartProps & { style?: React.CSSProperties }> = ({
         onClose={() => setIsPaymentModalOpen(false)}
         onConfirm={handlePaymentComplete}
         totalAmount={netTotal}
+      />
+      {/* Settlement Modal */}
+      <SettlementModal
+        isOpen={isSettlementModalOpen}
+        onClose={() => setIsSettlementModalOpen(false)}
+        orderItems={orderItems}
+        payments={payments}
+        discount={discount}
+        tableId={tableId}
+        checkDiscount={checkDiscount}
+        productDiscount={productDiscount}
+        customerName={customerName}
+        onPayment={onPayment}
+        orderNote={orderNote}
       />
       {/* Yemek Çeki Modal */}
       {isMealTicketModalOpen && (
