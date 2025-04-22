@@ -6,8 +6,13 @@ interface ComboSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   comboOptions: ComboOptions;
-  onComplete: (selections: { mainItem: ComboItem; side: ComboItem; drink: ComboItem; quantity: number }) => void;
-  selectedComboProduct: Product; 
+  onComplete: (selections: { 
+    mainItem: ComboItem | null; 
+    side: ComboItem | null; 
+    drink: ComboItem | null; 
+    quantity: number 
+  }) => void;
+  selectedComboProduct: Product | null; 
 }
 
 const ComboSelectionModal: React.FC<ComboSelectionModalProps> = ({
@@ -53,6 +58,42 @@ const ComboSelectionModal: React.FC<ComboSelectionModalProps> = ({
     }
   };
 
+  // Seçim yapılabilir mi kontrolü
+  const canComplete = () => {
+    const mainItemValid = mainItemsSelectionType === 'optional' ? true : !!selectedMain;
+    const sideItemValid = sidesSelectionType === 'optional' ? true : !!selectedSide;
+    const drinkItemValid = drinksSelectionType === 'optional' ? true : !!selectedDrink;
+    return mainItemValid && sideItemValid && drinkItemValid;
+  };
+
+  const handleComplete = () => {
+    // Opsiyonel seçimler için null değer kullan
+    const finalMainItem = mainItemsSelectionType === 'optional' && !selectedMain ? null : selectedMain;
+    const finalSideItem = sidesSelectionType === 'optional' && !selectedSide ? null : selectedSide;
+    const finalDrinkItem = drinksSelectionType === 'optional' && !selectedDrink ? null : selectedDrink;
+    
+    // Eğer tüm zorunlu seçimler tamamlanmışsa
+    if (canComplete()) {
+      onComplete({
+        mainItem: finalMainItem || (comboOptions.mainItems && comboOptions.mainItems.length > 0 ? comboOptions.mainItems[0] : null),
+        side: finalSideItem || (comboOptions.sides && comboOptions.sides.length > 0 ? comboOptions.sides[0] : null),
+        drink: finalDrinkItem || (comboOptions.drinks && comboOptions.drinks.length > 0 ? comboOptions.drinks[0] : null),
+        quantity,
+      });
+      onClose();
+    }
+  };
+
+  // Kategoriler için ikon seçimi
+  const getCategoryIcon = (category: string) => {
+    switch(category.toLowerCase()) {
+      case 'ana ürün': return <Sandwich size={20} className="mr-2" />;
+      case 'yan ürün': return <Pizza size={20} className="mr-2" />;
+      case 'içecek': return <Coffee size={20} className="mr-2" />;
+      default: return <Utensils size={20} className="mr-2" />;
+    }
+  };
+
   if (!isOpen) return null;
 
   useEffect(() => {
@@ -87,231 +128,179 @@ const ComboSelectionModal: React.FC<ComboSelectionModalProps> = ({
     setQuantity(q => Math.max(1, q + delta));
   };
 
-  const canComplete = () => {
-    const mainItemValid = mainItemsSelectionType === 'optional' ? true : !!selectedMain;
-    const sideItemValid = sidesSelectionType === 'optional' ? true : !!selectedSide;
-    const drinkItemValid = drinksSelectionType === 'optional' ? true : !!selectedDrink;
-    return mainItemValid && sideItemValid && drinkItemValid;
-  };
-
-  const handleComplete = () => {
-    // Opsiyonel seçimler için null değer kullan
-    const finalMainItem = mainItemsSelectionType === 'optional' && !selectedMain ? null : selectedMain;
-    const finalSideItem = sidesSelectionType === 'optional' && !selectedSide ? null : selectedSide;
-    const finalDrinkItem = drinksSelectionType === 'optional' && !selectedDrink ? null : selectedDrink;
-    
-    // Eğer tüm zorunlu seçimler tamamlanmışsa
-    if (canComplete()) {
-      onComplete({
-        mainItem: finalMainItem || comboOptions.mainItems[0], // Zorunlu ama seçilmemişse ilk öğeyi kullan
-        side: finalSideItem || comboOptions.sides[0], // Zorunlu ama seçilmemişse ilk öğeyi kullan
-        drink: finalDrinkItem || comboOptions.drinks[0], // Zorunlu ama seçilmemişse ilk öğeyi kullan
-        quantity,
-      });
-      onClose();
-    }
-  };
-
-  // Kategoriler için ikon seçimi
-  const getCategoryIcon = (category: string) => {
-    switch(category.toLowerCase()) {
-      case 'ana ürün': return <Sandwich size={20} className="mr-2" />;
-      case 'yan ürün': return <Pizza size={20} className="mr-2" />;
-      case 'içecek': return <Coffee size={20} className="mr-2" />;
-      default: return <Utensils size={20} className="mr-2" />;
-    }
-  };
-
-  const renderOptionCard = (item: ComboItem, isSelected: boolean, onSelect: () => void) => (
-    <button
-      key={item.id}
-      onClick={onSelect}
-      className={`relative group w-full transition-all duration-300 transform ${
-        isSelected ? 'scale-103 shadow-xl ring-2 ring-blue-400' : 'hover:scale-101 hover:shadow'
-      }`}
-      style={{ minHeight: 72 }}
-    >
-      <div className={`
-        relative p-2 rounded-xl border transition-all duration-300 flex flex-col items-center shadow
-        ${isSelected 
-          ? 'bg-gradient-to-br from-blue-500 to-blue-600 border-blue-300'
-          : 'bg-white border-gray-300 group-hover:border-blue-300'}
-      `}>
-        <div className="absolute top-2 right-2">
-          <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all duration-300 ${
-            isSelected ? 'border-blue-300 bg-blue-500' : 'border-gray-400 bg-gray-100'
-          }`}>
-            {isSelected && <Check size={10} className="text-white" />}
-          </div>
-        </div>
-
-        {item.isRequired && (
-          <div className="absolute top-2 left-2">
-            <div className="w-4 h-4 rounded-full bg-red-100 border border-red-300 flex items-center justify-center">
-              <span className="text-red-500 text-[8px] font-bold">!</span>
-            </div>
-          </div>
-        )}
-
-        {item.isOptional && (
-          <div className="absolute top-2 left-2">
-            <div className="w-4 h-4 rounded-full bg-yellow-100 border border-yellow-300 flex items-center justify-center">
-              <span className="text-yellow-500 text-[8px] font-bold">?</span>
-            </div>
-          </div>
-        )}
-
-        <div className="mb-1">
-          <Utensils size={16} className={`${isSelected ? 'text-white drop-shadow' : 'text-gray-500'}`} />
-        </div>
-
-        <h3 className={`text-sm font-bold mb-1 text-center ${isSelected ? 'text-white' : 'text-gray-700'}`}>
-          {item.name}
-        </h3>
-
-        {item.extraPrice && (
-          <div className={`inline-block px-1.5 py-0.5 rounded-full text-xs font-semibold mt-1 ${
-            isSelected ? 'bg-blue-400 text-white border border-blue-300' : 'bg-gray-100 text-gray-700 border border-gray-300'
-          }`}>
-            +{item.extraPrice} TL
-          </div>
-        )}
-      </div>
-    </button>
-  );
-
   return (
-    <div className="fixed inset-0 bg-white flex items-center justify-center z-50 w-screen h-screen" style={{ minHeight: '100vh', minWidth: '100vw' }}>
-      <div className="w-full h-full flex flex-col rounded-none shadow-none border-none bg-gray-100">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex justify-between items-center px-6 py-3 border-b border-gray-300 bg-white shadow-sm" style={{minHeight:56}}>
-          <div>
-            <div className="flex items-center">
-              <Sandwich size={24} className="text-blue-500 mr-2" />
-              <h2 className="text-xl font-extrabold text-gray-800 tracking-tight">{selectedComboProduct?.name || 'Menü Seçimi'}</h2>
-            </div>
-            {getSelectedComboName() && (
-              <div className="mt-1 flex items-center gap-2">
-                <div className="flex items-center">
-                  <ChevronRight size={14} className="text-blue-500 mr-1" />
-                  <span className="text-base font-bold text-blue-600">{getSelectedComboName()}</span>
-                </div>
-                <div className="flex gap-2">
-                  <span className="inline-block px-2 py-0.5 rounded bg-blue-100 text-blue-700 font-bold text-sm">Birim: {getUnitPrice()} TL</span>
-                  <span className="inline-block px-2 py-0.5 rounded bg-blue-100 text-blue-700 font-bold text-sm">Toplam: {getSelectedComboPrice()} TL</span>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="flex items-center gap-1">
-            <button onClick={() => handleQuantityChange(-1)} className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 text-lg font-bold flex items-center justify-center">-</button>
-            <span className="text-lg font-bold text-gray-800 w-7 text-center">{quantity}</span>
-            <button onClick={() => handleQuantityChange(1)} className="w-8 h-8 rounded-full bg-blue-500 hover:bg-blue-600 text-white text-lg font-bold flex items-center justify-center">+</button>
-            <button
-              onClick={onClose}
-              className="ml-4 text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-200 transition-colors text-lg"
-            >
-              <X size={22} />
-            </button>
-          </div>
-        </div>
-        {/* Content */}
-        <div className="flex-1 flex flex-row gap-4 px-6 py-4 overflow-y-auto bg-gray-100" style={{ minHeight: 0 }}>
-          {/* Main Items */}
-          <div className="flex-1 flex flex-col items-center">
-            <div className="mb-2 w-full">
-              <div className="flex items-center justify-center bg-gradient-to-r from-blue-100 to-blue-200 rounded-t-lg px-3 py-2 border-b border-blue-300">
-                <Sandwich size={18} className="text-blue-600 mr-2" />
-                <h3 className="text-base font-bold text-blue-700 text-center">Ana Ürün</h3>
-              </div>
-              <div className={`text-xs text-center px-2 py-1 rounded-b-md mb-2 flex items-center justify-center gap-1 ${getSelectionTypeColor(mainItemsSelectionType)}`}>
-                {getSelectionTypeIcon(mainItemsSelectionType)}
-                <span>{getSelectionTypeText(mainItemsSelectionType)}</span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 w-full max-w-[180px]">
-              {comboOptions.mainItems.map((item) => (
-                renderOptionCard(
-                  item,
-                  selectedMain?.id === item.id,
-                  () => setSelectedMain(item)
-                )
-              ))}
-            </div>
-          </div>
-
-          {/* Sides */}
-          <div className="flex-1 flex flex-col items-center">
-            <div className="mb-2 w-full">
-              <div className="flex items-center justify-center bg-gradient-to-r from-yellow-100 to-yellow-200 rounded-t-lg px-3 py-2 border-b border-yellow-300">
-                <Pizza size={18} className="text-yellow-600 mr-2" />
-                <h3 className="text-base font-bold text-yellow-700 text-center">Yan Ürün</h3>
-              </div>
-              <div className={`text-xs text-center px-2 py-1 rounded-b-md mb-2 flex items-center justify-center gap-1 ${getSelectionTypeColor(sidesSelectionType)}`}>
-                {getSelectionTypeIcon(sidesSelectionType)}
-                <span>{getSelectionTypeText(sidesSelectionType)}</span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 w-full max-w-[180px]">
-              {comboOptions.sides.map((item) => (
-                renderOptionCard(
-                  item,
-                  selectedSide?.id === item.id,
-                  () => setSelectedSide(item)
-                )
-              ))}
-            </div>
-          </div>
-
-          {/* Drinks */}
-          <div className="flex-1 flex flex-col items-center">
-            <div className="mb-2 w-full">
-              <div className="flex items-center justify-center bg-gradient-to-r from-green-100 to-green-200 rounded-t-lg px-3 py-2 border-b border-green-300">
-                <Coffee size={18} className="text-green-600 mr-2" />
-                <h3 className="text-base font-bold text-green-700 text-center">İçecek</h3>
-              </div>
-              <div className={`text-xs text-center px-2 py-1 rounded-b-md mb-2 flex items-center justify-center gap-1 ${getSelectionTypeColor(drinksSelectionType)}`}>
-                {getSelectionTypeIcon(drinksSelectionType)}
-                <span>{getSelectionTypeText(drinksSelectionType)}</span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2 w-full max-w-[180px]">
-              {comboOptions.drinks.map((item) => (
-                renderOptionCard(
-                  item,
-                  selectedDrink?.id === item.id,
-                  () => setSelectedDrink(item)
-                )
-              ))}
-            </div>
-          </div>
-        </div>
-        {/* Footer */}
-        <div className="flex justify-between items-center px-6 py-3 border-t border-gray-300 bg-white shadow-sm" style={{minHeight:48}}>
-          <button
+        <div className="flex items-center justify-between p-4 border-b">
+          <h2 className="text-lg font-semibold">{selectedComboProduct?.name} - Seçimler</h2>
+          <button 
             onClick={onClose}
-            className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-800 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            İptal
+            <X size={20} />
           </button>
-          <div className="flex items-center">
-            {!canComplete() && (
-              <div className="mr-3 text-yellow-600 text-xs flex items-center">
-                <AlertCircle size={14} className="mr-1" />
-                <span>Lütfen zorunlu seçimleri tamamlayın</span>
+        </div>
+        
+        {/* Content */}
+        <div className="flex-1 overflow-auto p-4">
+          {/* Ana Ürün Seçimi */}
+          {comboOptions.mainItems && comboOptions.mainItems.length > 0 && (
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  {getCategoryIcon('Ana Ürün')}
+                  <h3 className="font-medium">Ana Ürün</h3>
+                </div>
+                <div className={`text-xs px-2 py-0.5 rounded-full border flex items-center gap-1 ${getSelectionTypeColor(mainItemsSelectionType)}`}>
+                  {getSelectionTypeIcon(mainItemsSelectionType)}
+                  <span>{getSelectionTypeText(mainItemsSelectionType)}</span>
+                </div>
               </div>
-            )}
-            <button
-              onClick={handleComplete}
-              disabled={!canComplete()}
-              className={`px-6 py-2 rounded-lg font-bold text-sm transition-colors shadow ${canComplete() ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
-            >
-              {mainItemsSelectionType === 'optional' && !selectedMain || 
-               sidesSelectionType === 'optional' && !selectedSide || 
-               drinksSelectionType === 'optional' && !selectedDrink ? 
-                'Seçimsiz Tamamla' : 'Tamamla'}
-            </button>
+              <div className="bg-gray-50 rounded-lg p-2 space-y-2">
+                {comboOptions.mainItems.map((item) => (
+                  <button
+                    key={item.id}
+                    className={`flex items-center justify-between w-full p-2 rounded-lg border ${
+                      selectedMain?.id === item.id 
+                        ? 'bg-blue-50 border-blue-300' 
+                        : 'bg-white border-gray-200 hover:border-blue-200'
+                    }`}
+                    onClick={() => setSelectedMain(item)}
+                  >
+                    <div className="flex items-center">
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mr-2 ${
+                        selectedMain?.id === item.id ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
+                      }`}>
+                        {selectedMain?.id === item.id && <Check size={12} className="text-white" />}
+                      </div>
+                      <span>{item.name}</span>
+                    </div>
+                    {item.extraPrice && item.extraPrice > 0 && (
+                      <span className="text-sm text-blue-600">+{item.extraPrice.toFixed(2)} ₺</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Yan Ürün Seçimi */}
+          {comboOptions.sides && comboOptions.sides.length > 0 && (
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  {getCategoryIcon('Yan Ürün')}
+                  <h3 className="font-medium">Yan Ürün</h3>
+                </div>
+                <div className={`text-xs px-2 py-0.5 rounded-full border flex items-center gap-1 ${getSelectionTypeColor(sidesSelectionType)}`}>
+                  {getSelectionTypeIcon(sidesSelectionType)}
+                  <span>{getSelectionTypeText(sidesSelectionType)}</span>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-2 space-y-2">
+                {comboOptions.sides.map((item) => (
+                  <button
+                    key={item.id}
+                    className={`flex items-center justify-between w-full p-2 rounded-lg border ${
+                      selectedSide?.id === item.id 
+                        ? 'bg-blue-50 border-blue-300' 
+                        : 'bg-white border-gray-200 hover:border-blue-200'
+                    }`}
+                    onClick={() => setSelectedSide(item)}
+                  >
+                    <div className="flex items-center">
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mr-2 ${
+                        selectedSide?.id === item.id ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
+                      }`}>
+                        {selectedSide?.id === item.id && <Check size={12} className="text-white" />}
+                      </div>
+                      <span>{item.name}</span>
+                    </div>
+                    {item.extraPrice && item.extraPrice > 0 && (
+                      <span className="text-sm text-blue-600">+{item.extraPrice.toFixed(2)} ₺</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* İçecek Seçimi */}
+          {comboOptions.drinks && comboOptions.drinks.length > 0 && (
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  {getCategoryIcon('İçecek')}
+                  <h3 className="font-medium">İçecek</h3>
+                </div>
+                <div className={`text-xs px-2 py-0.5 rounded-full border flex items-center gap-1 ${getSelectionTypeColor(drinksSelectionType)}`}>
+                  {getSelectionTypeIcon(drinksSelectionType)}
+                  <span>{getSelectionTypeText(drinksSelectionType)}</span>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-2 space-y-2">
+                {comboOptions.drinks.map((item) => (
+                  <button
+                    key={item.id}
+                    className={`flex items-center justify-between w-full p-2 rounded-lg border ${
+                      selectedDrink?.id === item.id 
+                        ? 'bg-blue-50 border-blue-300' 
+                        : 'bg-white border-gray-200 hover:border-blue-200'
+                    }`}
+                    onClick={() => setSelectedDrink(item)}
+                  >
+                    <div className="flex items-center">
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center mr-2 ${
+                        selectedDrink?.id === item.id ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
+                      }`}>
+                        {selectedDrink?.id === item.id && <Check size={12} className="text-white" />}
+                      </div>
+                      <span>{item.name}</span>
+                    </div>
+                    {item.extraPrice && item.extraPrice > 0 && (
+                      <span className="text-sm text-blue-600">+{item.extraPrice.toFixed(2)} ₺</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {/* Miktar Seçimi */}
+          <div className="mb-4">
+            <h3 className="font-medium mb-2">Miktar</h3>
+            <div className="flex items-center">
+              <button 
+                className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 bg-gray-100"
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              >
+                -
+              </button>
+              <span className="mx-4 font-medium">{quantity}</span>
+              <button 
+                className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 bg-gray-100"
+                onClick={() => setQuantity(quantity + 1)}
+              >
+                +
+              </button>
+            </div>
           </div>
+        </div>
+        
+        {/* Footer */}
+        <div className="border-t p-4">
+          <button
+            className={`w-full py-2 rounded-lg font-medium ${
+              canComplete()
+                ? 'bg-green-500 text-white hover:bg-green-600'
+                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            }`}
+            onClick={handleComplete}
+            disabled={!canComplete()}
+          >
+            Tamamla
+          </button>
         </div>
       </div>
     </div>

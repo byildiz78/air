@@ -106,23 +106,30 @@ const TakeawayPage: React.FC = () => {
     setCustomerName(name);
   };
 
-  const handleComboComplete = (selections: { mainItem: ComboItem; side: ComboItem; drink: ComboItem }) => {
+  const handleComboComplete = (selections: { 
+    mainItem: ComboItem | null; 
+    side: ComboItem | null; 
+    drink: ComboItem | null; 
+    quantity: number 
+  }) => {
     if (!selectedComboProduct) return;
     
-    // Calculate any extra costs from selections
+    // Calculate any extra costs from selections (only for non-null items)
     const extraCost = (
-      (selections.mainItem.extraPrice || 0) +
-      (selections.side.extraPrice || 0) +
-      (selections.drink.extraPrice || 0)
+      (selections.mainItem?.extraPrice || 0) +
+      (selections.side?.extraPrice || 0) +
+      (selections.drink?.extraPrice || 0)
     );
 
-    const comboName = `${selectedComboProduct.name} (${selections.mainItem.name})`;
+    // Create a descriptive name for the combo
+    const mainItemName = selections.mainItem ? ` (${selections.mainItem.name})` : '';
+    const comboName = `${selectedComboProduct.name}${mainItemName}`;
 
     setOrderItems(prev => [...prev, {
       productId: selectedComboProduct.id,
       name: comboName,
       price: selectedComboProduct.price + extraCost,
-      quantity: 1,
+      quantity: selections.quantity || 1, // Use provided quantity or default to 1
       comboSelections: selections
     }]);
 

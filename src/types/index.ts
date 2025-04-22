@@ -45,21 +45,23 @@ export interface Product {
 }
 
 export interface ComboOptions {
-  mainItems: ComboItem[];
-  sides: ComboItem[];
-  drinks: ComboItem[];
-  mainItemsSelectionType?: 'required' | 'optional' | 'multiple';
-  sidesSelectionType?: 'required' | 'optional' | 'multiple';
-  drinksSelectionType?: 'required' | 'optional' | 'multiple';
+  mainItems?: ComboItem[];
+  sides?: ComboItem[];
+  drinks?: ComboItem[];
+  mainItemsSelectionType?: 'required' | 'optional';
+  sidesSelectionType?: 'required' | 'optional';
+  drinksSelectionType?: 'required' | 'optional';
+  maxSides?: number;
+  maxDrinks?: number;
 }
 
 export interface ComboItem {
   id: string;
   name: string;
   extraPrice?: number;
+  description?: string;
   isRequired?: boolean;
   isOptional?: boolean;
-  maxSelections?: number;
 }
 
 export interface Category {
@@ -78,11 +80,12 @@ export interface OrderItem {
   addedAt?: string;
   addedBy?: string;
   discount?: number;
-  comboSelections?: {
+  isCombo?: boolean;
+  comboDetails?: {
+    description: string;
     mainItem: ComboItem | null;
-    side: ComboItem | null;
-    drink: ComboItem | null;
-    quantity?: number;
+    sides: ComboItem[];
+    drinks: ComboItem[];
   };
   status?: 'pending' | 'in-progress' | 'completed';
   notes?: string;
@@ -126,4 +129,16 @@ export interface KitchenDisplaySettings {
   viewMode: 'grid' | 'list';
   alertThreshold: number; // minutes before order is marked as delayed
   criticalThreshold: number; // minutes before order is marked as critical
+}
+
+export interface ProductMessage {
+  id: string;
+  text: string;
+  name: string;
+  groupId?: string;
+}
+
+export interface ProductMessageGroup {
+  id: string;
+  name: string;
 }

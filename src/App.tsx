@@ -8,9 +8,10 @@ const App: React.FC = () => {
   // Check if we're in backoffice or kitchen display based on the URL path
   const isBackoffice = pathname?.startsWith('/backoffice');
   const isKitchenDisplay = pathname?.startsWith('/kitchen-display');
+  const isMobileOrder = pathname?.startsWith('/mobileorder');
   
   // Don't render the footer in backoffice or kitchen display
-  const showFooter = !isBackoffice && !isKitchenDisplay;
+  const showFooter = !isBackoffice && !isKitchenDisplay && !isMobileOrder;
   
   return (
     <div className="flex flex-col min-h-screen">

@@ -30,6 +30,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const hideBackground = plainBackgroundPages.includes(pathname || '');
   const isOrderPage = pathname?.startsWith('/order');
   const isDeliveryCustomerPage = pathname === '/delivery-customer';
+  const isMobileOrderPage = pathname?.startsWith('/mobileorder');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -42,7 +43,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div className={`flex flex-col h-screen ${!hideBackground ? 'bg-[url(/images/bg.jpg)] bg-cover bg-center' : 'bg-gray-900'}`}>
       {/* Header - Hidden in order pages and delivery-customer page */}
-      {!isOrderPage && !isDeliveryCustomerPage && (
+      {!isOrderPage && !isDeliveryCustomerPage &&!isMobileOrderPage && (
         <header className="h-16 shrink-0 bg-gray-900/90 border-b border-gray-800 px-6 flex items-center justify-between">
           <div className="text-2xl font-bold text-white">robotPOS Air</div>
           <div className="flex items-center gap-4">
@@ -68,7 +69,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </main>
 
       {/* Footer - Hidden in backoffice, order pages, and delivery-customer page */}
-      {!isBackoffice && !isOrderPage && !isDeliveryCustomerPage && (
+      {!isBackoffice && !isOrderPage && !isDeliveryCustomerPage && !isMobileOrderPage && (
         <footer className="h-12 shrink-0 bg-gray-900/90 border-t border-gray-800 px-3 flex items-center">
           <div className="flex justify-between items-center w-full">
             <div className="flex items-center gap-1 text-gray-400 text-xs">
@@ -83,6 +84,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               </a>
               <a href="/zamankarti" className="flex items-center gap-1 bg-purple-500/10 hover:bg-purple-500/20 text-purple-500 hover:text-purple-400 px-2 py-1 rounded-full transition-all duration-200 ml-1 text-xs font-semibold">
                 <span>Zaman Kartı</span>
+              </a>
+              <a href="/kitchen-display" className="flex items-center gap-1 bg-red-500/10 hover:bg-red-500/20 text-red-500 hover:text-red-400 px-2 py-1 rounded-full transition-all duration-200 ml-1 text-xs font-semibold">
+                <span>KDS</span>
+              </a>
+              <a href="/mobileorder" className="flex items-center gap-1 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 hover:text-yellow-400 px-2 py-1 rounded-full transition-all duration-200 ml-1 text-xs font-semibold">
+                <span>Mobil</span>
               </a>
             </div>
             <div className="flex items-center gap-4">

@@ -9,9 +9,10 @@ const Footer: React.FC = () => {
   // Check if we're in backoffice or kitchen display based on the URL path
   const isBackoffice = pathname?.startsWith('/backoffice');
   const isKitchenDisplay = pathname?.startsWith('/kitchen-display');
+  const isMobileOrder = pathname?.startsWith('/mobileorder');
   
   // Don't render the footer in backoffice or kitchen display
-  if (isBackoffice || isKitchenDisplay) {
+  if (isBackoffice || isKitchenDisplay || isMobileOrder) {
     return null;
   }
 
@@ -36,7 +37,7 @@ const Footer: React.FC = () => {
             className="flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors"
           >
             <Clock size={14} />
-            <span className="text-xs">Zaman Kartı</span>
+            <span className="text-xs">Zaman Kartı1</span>
           </Link>
           <Link 
             href="/kitchen-display"
@@ -44,6 +45,13 @@ const Footer: React.FC = () => {
           >
             <MonitorPlay size={14} />
             <span className="text-xs">KDS</span>
+          </Link>
+          <Link 
+            href="/mobileorder"
+            className="flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors"
+          >
+            <MonitorPlay size={14} />
+            <span className="text-xs">Mobil</span>
           </Link>
         </div>
 
@@ -54,7 +62,7 @@ const Footer: React.FC = () => {
             <div className="flex items-center gap-1.5 bg-gray-800/50 px-2 py-1 rounded-full">
               <User size={14} className="text-blue-400" />
               <span className="text-white text-xs font-medium">Ahmet Yılmaz</span>
-              <span className="text-gray-400 text-xs">(Baş Kasiyer)</span>
+              <span className="text-gray-400 text-xs">(Baş Kasiyer1)</span>
             </div>
           </div>
 

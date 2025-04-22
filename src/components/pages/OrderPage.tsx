@@ -89,28 +89,39 @@ const OrderPage: React.FC<OrderPageProps> = ({ tableId }) => {
     router.push('/table-layout');
   };
 
-  const handleComboComplete = (selections: { mainItem: ComboItem; side: ComboItem; drink: ComboItem }) => {
+  const handleComboComplete = (selections: { 
+    mainItem: ComboItem | null; 
+    side: ComboItem | null; 
+    drink: ComboItem | null; 
+    quantity: number 
+  }) => {
     if (!selectedComboProduct) return;
 
     const now = new Date();
     const formattedTime = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
     const currentStaff = 'Ahmet Yılmaz';
 
-    const extraCost = (selections.mainItem.extraPrice || 0) +
-                     (selections.side.extraPrice || 0);
+    // Calculate extra cost only for non-null selections
+    const extraCost = 
+      (selections.mainItem?.extraPrice || 0) +
+      (selections.side?.extraPrice || 0) +
+      (selections.drink?.extraPrice || 0);
 
-    const comboName = `${selectedComboProduct.name} (${selections.mainItem.name})`;
+    // Create a descriptive name for the combo
+    const mainItemName = selections.mainItem ? ` (${selections.mainItem.name})` : '';
+    const comboName = `${selectedComboProduct.name}${mainItemName}`;
 
     setOrderItems(prev => [...prev, {
       productId: selectedComboProduct.id,
       name: comboName,
       price: selectedComboProduct.price + extraCost,
-      quantity: 1,
+      quantity: selections.quantity || 1, // Use provided quantity or default to 1
       addedAt: formattedTime,
       addedBy: currentStaff,
       comboSelections: selections
     }]);
 
+    setIsComboModalOpen(false);
     setSelectedComboProduct(null);
   };
 
