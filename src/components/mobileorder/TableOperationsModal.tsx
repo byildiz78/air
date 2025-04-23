@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, RefreshCw, Users, Scissors, GitMerge } from 'lucide-react';
+import { X, RefreshCw, Users, Scissors, GitMerge, Percent } from 'lucide-react';
 
 interface TableOperationsModalProps {
   isOpen: boolean;
@@ -11,6 +11,7 @@ interface TableOperationsModalProps {
   onChangeWaiter: () => void;
   onSplitTable: () => void;
   onMergeTables: () => void;
+  onCheckDiscount?: () => void;
 }
 
 const TableOperationsModal: React.FC<TableOperationsModalProps> = ({
@@ -19,7 +20,8 @@ const TableOperationsModal: React.FC<TableOperationsModalProps> = ({
   onChangeTable,
   onChangeWaiter,
   onSplitTable,
-  onMergeTables
+  onMergeTables,
+  onCheckDiscount
 }) => {
   if (!isOpen) return null;
 
@@ -92,6 +94,17 @@ const TableOperationsModal: React.FC<TableOperationsModalProps> = ({
                 <GitMerge size={20} className="mr-3 text-blue-600" />
                 <span className="font-medium">Masa Birleştir</span>
               </motion.button>
+              
+              {onCheckDiscount && (
+                <motion.button
+                  className="w-full flex items-center p-4 mb-2 bg-white rounded-lg border border-gray-200"
+                  whileTap={{ scale: 0.98 }}
+                  onClick={onCheckDiscount}
+                >
+                  <Percent size={20} className="mr-3 text-teal-600" />
+                  <span className="font-medium">Çek İndirimi</span>
+                </motion.button>
+              )}
             </div>
             
             {/* Safe area padding for mobile */}

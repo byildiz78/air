@@ -174,47 +174,11 @@ const MobileCart: React.FC<MobileCartProps> = ({
             </div>
           )}
           
-          {/* Total and Payment Buttons */}
+          {/* Total */}
           <div className="p-3">
-            <div className="flex justify-between items-center mb-3">
+            <div className="flex justify-between items-center">
               <span className="font-bold">Toplam:</span>
               <span className="font-bold text-lg">{total.toFixed(2)} ₺</span>
-            </div>
-            
-            {/* Check Discount Button */}
-            <button 
-              onClick={onCheckDiscount}
-              className="w-full py-2 px-4 mb-3 bg-teal-500 text-white rounded-lg font-medium hover:bg-teal-600 transition-colors flex items-center justify-center gap-2"
-            >
-              <span>Çek İndirimi</span>
-              <span>%</span>
-            </button>
-            
-            <div className="grid grid-cols-2 gap-2">
-              <button 
-                onClick={() => onPayment('cash', total)}
-                className="py-2 px-4 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-colors"
-              >
-                Nakit
-              </button>
-              <button 
-                onClick={() => onPayment('card', total)}
-                className="py-2 px-4 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
-              >
-                Kredi Kartı
-              </button>
-              <button 
-                onClick={() => onPayment('multinet', total)}
-                className="py-2 px-4 bg-yellow-500 text-white rounded-lg font-medium hover:bg-yellow-600 transition-colors"
-              >
-                Multinet
-              </button>
-              <button 
-                onClick={() => onPayment('sodexo', total)}
-                className="py-2 px-4 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600 transition-colors"
-              >
-                Sodexo
-              </button>
             </div>
           </div>
         </div>

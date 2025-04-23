@@ -17,7 +17,10 @@ const QuickOperations: React.FC = () => {
             <Search size={24} className="mb-1" />
             <span className="text-xs">Çağır</span>
           </button>
-          <button className="btn-green flex flex-col items-center justify-center text-white p-2 rounded-lg">
+          <button 
+            onClick={() => router.push('/delivery-status')}
+            className="btn-green flex flex-col items-center justify-center text-white p-2 rounded-lg"
+          >
             <Clipboard size={24} className="mb-1" />
             <span className="text-xs">Paket Durumu</span>
           </button>

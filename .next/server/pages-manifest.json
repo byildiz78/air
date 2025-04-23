@@ -1,5 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js"
-}
+{"/CustomerDisplayPage":"pages/CustomerDisplayPage.html","/ActionsManagementPage":"pages/ActionsManagementPage.html","/RecallPage":"pages/RecallPage.html","/ExpensesPage":"pages/ExpensesPage.html","/OrderPage":"pages/OrderPage.html","/TableLayoutPage":"pages/TableLayoutPage.html","/HomePage":"pages/HomePage.html","/_app":"pages/_app.js","/TakeawayPage":"pages/TakeawayPage.html","/_error":"pages/_error.js","/KitchenDisplayPage":"pages/KitchenDisplayPage.html","/_document":"pages/_document.js","/404":"pages/404.html"}

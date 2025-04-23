@@ -1507,7 +1507,7 @@
     "AuthorityID": 95,
     "GroupName": "GENEL",
     "AuthorityKey": "PackagerAccountStatus",
-    "AuthorityText": "PAKETÇİ HESAP DURUMU",
+    "AuthorityText": "PAKETÇİ Hesap Durumu",
     "AuthorityDescription": null,
     "DefaultLevel": 1,
     "NeedAllways": "0",

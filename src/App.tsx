@@ -9,9 +9,10 @@ const App: React.FC = () => {
   const isBackoffice = pathname?.startsWith('/backoffice');
   const isKitchenDisplay = pathname?.startsWith('/kitchen-display');
   const isMobileOrder = pathname?.startsWith('/mobileorder');
+  const isDeliveryStatus = pathname?.startsWith('/delivery-status');
   
   // Don't render the footer in backoffice or kitchen display
-  const showFooter = !isBackoffice && !isKitchenDisplay && !isMobileOrder;
+  const showFooter = !isBackoffice && !isKitchenDisplay && !isMobileOrder && !isDeliveryStatus;
   
   return (
     <div className="flex flex-col min-h-screen">

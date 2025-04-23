@@ -6,35 +6,35 @@ interface CustomerFormProps {
 
 const CustomerForm: React.FC<CustomerFormProps> = ({ onFocus }) => {
   const formFields = [
-    { name: 'name', label: 'ADI', },
-    { name: 'idNumber', label: 'TC/PASAPORT', },
-    { name: 'district', label: 'İLÇE/SEMT', },
-    { name: 'neighborhood', label: 'MAHALLE', },
-    { name: 'street', label: 'CADDE', },
-    { name: 'avenue', label: 'SOKAK', },
-    { name: 'buildingNo', label: 'BİNA NO', },
-    { name: 'apartmentNo', label: 'DAİRE NO', },
-    { name: 'region', label: 'BÖLGE', },
-    { name: 'site', label: 'SİTE', },
-    { name: 'block', label: 'BLOK', },
-    { name: 'apartmentName', label: 'APT. ADI', },
-    { name: 'description', label: 'TARİF', },
+    { name: 'name', label: 'Adı', },
+    { name: 'idNumber', label: 'TC/Pasaport', },
+    { name: 'district', label: 'İlçe/Semt', },
+    { name: 'neighborhood', label: 'Mahalle', },
+    { name: 'street', label: 'Cadde', },
+    { name: 'avenue', label: 'Sokak', },
+    { name: 'buildingNo', label: 'Bina No', },
+    { name: 'apartmentNo', label: 'Daire No', },
+    { name: 'region', label: 'Bölge', },
+    { name: 'site', label: 'Site', },
+    { name: 'block', label: 'Blok', },
+    { name: 'apartmentName', label: 'Apt. Adı', },
+    { name: 'description', label: 'Tarif', },
   ];
 
   return (
     <div className="space-y-4">
       {formFields.map((field) => (
         <div key={field.name} className="flex flex-col">
-          <label className="text-sm text-gray-400 mb-1">{field.label}</label>
+          <label className="text-sm text-gray-600 mb-1">{field.label}</label>
           {field.name === 'description' ? (
             <textarea
-              className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white resize-none h-32"
+              className="bg-white border border-gray-200 rounded-md px-4 py-3 text-gray-800 resize-none h-32"
               onFocus={() => onFocus(field.name)}
             />
           ) : (
             <input
               type="text"
-              className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"
+              className="bg-white border border-gray-200 rounded-md px-4 py-3 text-gray-800"
               onFocus={() => onFocus(field.name)}
             />
           )}

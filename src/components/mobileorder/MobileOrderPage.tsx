@@ -334,6 +334,7 @@ const MobileOrderPage: React.FC<MobileOrderPageProps> = ({ tableId }) => {
           itemCount={orderItems.length}
           totalAmount={orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)}
           onSendToKitchen={handleSendToKitchen}
+          onCheckDiscount={() => setIsCheckDiscountOpen(true)}
         />
       </motion.div>
 

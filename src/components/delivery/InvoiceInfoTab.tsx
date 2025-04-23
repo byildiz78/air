@@ -43,15 +43,15 @@ const InvoiceInfoTab: React.FC<InvoiceInfoTabProps> = ({
 
   return (
     <div className="p-0.5 h-full overflow-auto">
-      <div className="bg-white rounded-lg shadow-sm h-full flex flex-col">
-        <div className="bg-blue-100 py-0.5 px-1">
-          <h2 className="font-bold text-blue-900 text-[10px]">FATURA BİLGİLERİ</h2>
+      <div className="bg-white rounded-md shadow-sm h-full flex flex-col">
+        <div className="bg-blue-500 text-white py-1 px-2 rounded-t-md">
+          <h2 className="font-bold text-xs">Fatura Bilgileri</h2>
         </div>
         
-        <div className="p-1">
-          <div className="space-y-1 text-[10px]">
+        <div className="p-2">
+          <div className="space-y-2 text-xs">
             <div>
-              <label className="text-[10px] text-gray-500 block">CARİ ÜNVANI</label>
+              <label className="text-xs text-gray-600 block mb-0.5">Cari Ünvanı</label>
               <input
                 type="text"
                 name="cariUnvani"
@@ -59,12 +59,12 @@ const InvoiceInfoTab: React.FC<InvoiceInfoTabProps> = ({
                 onChange={handleInputChange}
                 onFocus={() => handleInputFocus('cariUnvani')}
                 onBlur={handleInputBlur}
-                className="border border-gray-300 py-0.5 px-1 rounded w-full text-[10px] h-5"
+                className="border border-gray-200 py-1 px-2 rounded-md w-full text-xs"
               />
             </div>
             
             <div>
-              <label className="text-[10px] text-gray-500 block">İL ADI</label>
+              <label className="text-xs text-gray-600 block mb-0.5">İl Adı</label>
               <input
                 type="text"
                 name="ilAdi"
@@ -72,12 +72,12 @@ const InvoiceInfoTab: React.FC<InvoiceInfoTabProps> = ({
                 onChange={handleInputChange}
                 onFocus={() => handleInputFocus('ilAdi')}
                 onBlur={handleInputBlur}
-                className="border border-gray-300 py-0.5 px-1 rounded w-full text-[10px] h-5"
+                className="border border-gray-200 py-1 px-2 rounded-md w-full text-xs"
               />
             </div>
             
             <div>
-              <label className="text-[10px] text-gray-500 block">VERGİ DAİRESİ</label>
+              <label className="text-xs text-gray-600 block mb-0.5">Vergi Dairesi</label>
               <input
                 type="text"
                 name="vergiDairesi"
@@ -85,12 +85,12 @@ const InvoiceInfoTab: React.FC<InvoiceInfoTabProps> = ({
                 onChange={handleInputChange}
                 onFocus={() => handleInputFocus('vergiDairesi')}
                 onBlur={handleInputBlur}
-                className="border border-gray-300 py-0.5 px-1 rounded w-full text-[10px] h-5"
+                className="border border-gray-200 py-1 px-2 rounded-md w-full text-xs"
               />
             </div>
             
             <div>
-              <label className="text-[10px] text-gray-500 block">VERGİ NO</label>
+              <label className="text-xs text-gray-600 block mb-0.5">Vergi No</label>
               <input
                 type="text"
                 name="vergiNo"
@@ -98,7 +98,7 @@ const InvoiceInfoTab: React.FC<InvoiceInfoTabProps> = ({
                 onChange={handleInputChange}
                 onFocus={() => handleInputFocus('vergiNo')}
                 onBlur={handleInputBlur}
-                className="border border-gray-300 py-0.5 px-1 rounded w-full text-[10px] h-5"
+                className="border border-gray-200 py-1 px-2 rounded-md w-full text-xs"
               />
             </div>
           </div>

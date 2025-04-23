@@ -38,7 +38,7 @@ const PreviousOrdersTab: React.FC<PreviousOrdersTabProps> = ({
       time: "10:44",
       total: 248.00,
       items: [
-        { id: 1, name: "PEYNİRLİ", quantity: 1, price: 180.00 }
+        { id: 1, name: "Peynirli", quantity: 1, price: 180.00 }
       ]
     },
     {
@@ -47,8 +47,8 @@ const PreviousOrdersTab: React.FC<PreviousOrdersTabProps> = ({
       time: "12:34",
       total: 320.50,
       items: [
-        { id: 1, name: "KARIŞIK PİZZA", quantity: 1, price: 200.00 },
-        { id: 2, name: "KOLA", quantity: 2, price: 60.25 }
+        { id: 1, name: "Karışık Pizza", quantity: 1, price: 200.00 },
+        { id: 2, name: "Kola", quantity: 2, price: 60.25 }
       ]
     }
   ];
@@ -60,9 +60,9 @@ const PreviousOrdersTab: React.FC<PreviousOrdersTabProps> = ({
 
   return (
     <div className="p-4 h-full">
-      <div className="bg-white rounded-lg shadow-md h-full flex flex-col">
-        <div className="bg-green-600 text-white font-bold py-2 px-4 rounded-t-lg">
-          FİŞ / SATIŞ
+      <div className="bg-white rounded-md shadow-sm h-full flex flex-col">
+        <div className="bg-green-500 text-white font-bold py-2 px-4 rounded-t-md">
+          Fiş / Satış
         </div>
         
         <div className="flex-1 overflow-auto">
@@ -77,9 +77,9 @@ const PreviousOrdersTab: React.FC<PreviousOrdersTabProps> = ({
                 </div>
               </div>
               
-              <div className="bg-gray-100 p-2 rounded mb-2">
+              <div className="bg-gray-50 p-2 rounded-md mb-2 border border-gray-200">
                 <table className="w-full text-sm">
-                  <thead className="bg-gray-200">
+                  <thead className="bg-gray-100">
                     <tr>
                       <th className="py-1 px-2 text-left w-8">#</th>
                       <th className="py-1 px-2 text-left">Ürün</th>
@@ -102,13 +102,13 @@ const PreviousOrdersTab: React.FC<PreviousOrdersTabProps> = ({
               
               <div className="flex justify-between items-center">
                 <div className="font-bold">
-                  TOPLAM: {order.total.toFixed(2)}
+                  Toplam: {order.total.toFixed(2)}
                 </div>
                 <button 
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors"
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition-colors"
                   onClick={() => handleCopyOrder(order.id)}
                 >
-                  SİPARİŞİ KOPYALA
+                  Siparişi Kopyala
                 </button>
               </div>
             </div>

@@ -12,6 +12,7 @@ interface MobileFooterProps {
   itemCount: number;
   totalAmount: number;
   onSendToKitchen?: () => void;
+  onCheckDiscount?: () => void;
 }
 
 const MobileFooter: React.FC<MobileFooterProps> = ({
@@ -20,6 +21,7 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
   itemCount,
   totalAmount,
   onSendToKitchen = () => console.log('Send to kitchen'),
+  onCheckDiscount,
 }) => {
   const router = useRouter();
   const [isTableOperationsOpen, setIsTableOperationsOpen] = useState(false);
@@ -298,14 +300,17 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
       </div>
 
       {/* Table Operations Modal */}
-      <TableOperationsModal 
-        isOpen={isTableOperationsOpen}
-        onClose={() => setIsTableOperationsOpen(false)}
-        onChangeTable={handleChangeTable}
-        onChangeWaiter={handleChangeWaiter}
-        onSplitTable={handleSplitTable}
-        onMergeTables={handleMergeTables}
-      />
+      {isTableOperationsOpen && (
+        <TableOperationsModal 
+          isOpen={isTableOperationsOpen}
+          onClose={() => setIsTableOperationsOpen(false)}
+          onChangeTable={handleChangeTable}
+          onChangeWaiter={handleChangeWaiter}
+          onSplitTable={handleSplitTable}
+          onMergeTables={handleMergeTables}
+          onCheckDiscount={onCheckDiscount}
+        />
+      )}
 
       {/* Printing/Sending Feedback */}
       <AnimatePresence>
